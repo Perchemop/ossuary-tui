@@ -84,7 +84,11 @@ fn workflow_same_seed_is_deterministic_and_different_seeds_diverge() {
         other.step();
     }
 
-    assert_eq!(a.frame(), b.frame(), "same seed must reproduce the same frame");
+    assert_eq!(
+        a.frame(),
+        b.frame(),
+        "same seed must reproduce the same frame"
+    );
     assert_ne!(a.frame(), other.frame(), "different seeds should differ");
 }
 

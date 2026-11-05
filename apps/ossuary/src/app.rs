@@ -10,7 +10,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifier
 use crossterm::style::{Color, Print, ResetColor, SetForegroundColor};
 use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::{execute, queue};
-use ossuary_core::{default_config_path, log_dir, user_art_dir, ArtPack, Config, Engine, VERSION};
+use ossuary_core::{ArtPack, Config, Engine, VERSION, default_config_path, log_dir, user_art_dir};
 use update_check::{UpdateChecker, UpdateStatus};
 
 use crate::palette::color_for;

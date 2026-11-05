@@ -124,7 +124,13 @@ impl Column {
     /// Spawn a column. `from_top` places it just above the top edge (a fresh
     /// column re-entering the screen); otherwise it is distributed anywhere on
     /// screen so the first frame is already full.
-    fn spawn(rng: &mut Rng, height: usize, config: &Config, glyphs: GlyphSet, from_top: bool) -> Self {
+    fn spawn(
+        rng: &mut Rng,
+        height: usize,
+        config: &Config,
+        glyphs: GlyphSet,
+        from_top: bool,
+    ) -> Self {
         let max_trail = config.trail.max(MIN_TRAIL);
         let span = max_trail.saturating_sub(MIN_TRAIL) + 1;
         let len = MIN_TRAIL + rng.below(span);

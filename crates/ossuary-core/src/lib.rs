@@ -31,8 +31,8 @@ pub use glyphs::GlyphSet;
 pub use rng::Rng;
 
 pub use config::{
-    config_dir, default_config_path, log_dir, user_art_dir, ART_INTERVAL_MAX, ART_INTERVAL_MIN,
-    SPEED_MAX, SPEED_MIN, TRAIL_MAX, TRAIL_MIN,
+    ART_INTERVAL_MAX, ART_INTERVAL_MIN, SPEED_MAX, SPEED_MIN, TRAIL_MAX, TRAIL_MIN, config_dir,
+    default_config_path, log_dir, user_art_dir,
 };
 
 /// Application name, used in configuration paths and diagnostics.
