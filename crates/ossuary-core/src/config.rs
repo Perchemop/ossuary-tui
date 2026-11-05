@@ -206,8 +206,10 @@ mod tests {
 
     #[test]
     fn density_moves_by_tenths_and_stays_in_range() {
-        let mut config = Config::default();
-        config.density = 0.5;
+        let mut config = Config {
+            density: 0.5,
+            ..Config::default()
+        };
         config.denser();
         assert!((config.density - 0.6).abs() < 1e-4);
         config.sparser();
@@ -225,8 +227,10 @@ mod tests {
 
     #[test]
     fn flicker_ladder_cycles_through_all_steps() {
-        let mut config = Config::default();
-        config.flicker = 0.0;
+        let mut config = Config {
+            flicker: 0.0,
+            ..Config::default()
+        };
         let mut seen = vec![config.flicker];
         for _ in 0..3 {
             config.cycle_flicker();
@@ -241,9 +245,11 @@ mod tests {
     fn theme_round_trips_through_a_file() {
         let dir = tempfile::tempdir().expect("tempdir");
         let path = dir.path().join("nested").join("theme.json");
-        let mut config = Config::default();
-        config.glyph_set = "shade".to_string();
-        config.speed = 1.25;
+        let config = Config {
+            glyph_set: "shade".to_string(),
+            speed: 1.25,
+            ..Config::default()
+        };
         config.save_to(&path).expect("save");
         let loaded = Config::load_from(&path).expect("load");
         assert_eq!(loaded, config);

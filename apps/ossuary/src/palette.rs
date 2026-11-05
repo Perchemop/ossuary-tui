@@ -13,6 +13,7 @@ pub fn color_for(intensity: u8, monochrome: bool) -> Color {
         (true, _) => Color::White,
         (false, 1) => Color::DarkGreen,
         (false, 2) => Color::Green,
-        (false, _) => Color::LightGreen,
+        // ANSI 10 is the "bright green" slot; crossterm has no named variant.
+        (false, _) => Color::AnsiValue(10),
     }
 }

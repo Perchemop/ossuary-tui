@@ -28,20 +28,8 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
 
-      # TEMPORARY BOOTSTRAP (remove once the formatted sources are committed):
-      # the maintainer's machine cannot run cargo, so CI formats the tree here
-      # and uploads the result to be committed. See docs/process-feedback.md.
-      - name: rustfmt bootstrap (temporary)
-        run: |
-          cargo fmt --all
-          tar -czf /tmp/rustfmt-src.tgz $(git ls-files '*.rs')
-
-      - name: Upload formatted sources (temporary)
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: rustfmt-src
-          path: /tmp/rustfmt-src.tgz
-          if-no-files-found: error
+      - name: Check formatting
+        run: cargo fmt --all -- --check
 
       - name: Clippy (no warnings)
         run: cargo clippy --all-targets --workspace -- -D warnings

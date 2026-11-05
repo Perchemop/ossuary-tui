@@ -84,15 +84,21 @@ fn workflow_same_seed_is_deterministic_and_different_seeds_diverge() {
         other.step();
     }
 
-    assert_eq!(a.frame(), b.frame(), "same seed must reproduce the same frame");
+    assert_eq!(
+        a.frame(),
+        b.frame(),
+        "same seed must reproduce the same frame"
+    );
     assert_ne!(a.frame(), other.frame(), "different seeds should differ");
 }
 
 #[test]
 fn workflow_art_piece_is_typed_completed_and_released() {
-    let mut config = Config::default();
     // Control the art manually rather than on a timer.
-    config.show_art = false;
+    let config = Config {
+        show_art: false,
+        ..Config::default()
+    };
     let mut engine = Engine::new(40, 14, config, ArtPack::built_in(), 5);
 
     engine.summon();

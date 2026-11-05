@@ -124,7 +124,13 @@ impl Column {
     /// Spawn a column. `from_top` places it just above the top edge (a fresh
     /// column re-entering the screen); otherwise it is distributed anywhere on
     /// screen so the first frame is already full.
-    fn spawn(rng: &mut Rng, height: usize, config: &Config, glyphs: GlyphSet, from_top: bool) -> Self {
+    fn spawn(
+        rng: &mut Rng,
+        height: usize,
+        config: &Config,
+        glyphs: GlyphSet,
+        from_top: bool,
+    ) -> Self {
         let max_trail = config.trail.max(MIN_TRAIL);
         let span = max_trail.saturating_sub(MIN_TRAIL) + 1;
         let len = MIN_TRAIL + rng.below(span);
@@ -440,8 +446,10 @@ mod tests {
     #[test]
     fn set_config_re_resolves_glyphs_and_keeps_unknown_as_is() {
         let mut engine = Engine::new(20, 8, Config::default(), ArtPack::empty(), 2);
-        let mut config = Config::default();
-        config.glyph_set = "letters".to_string();
+        let mut config = Config {
+            glyph_set: "letters".to_string(),
+            ..Config::default()
+        };
         engine.set_config(config.clone());
         assert_eq!(engine.glyphs().name(), "letters");
         // An unknown name must not change the active set.
