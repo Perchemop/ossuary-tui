@@ -34,10 +34,27 @@ Append-only log of work done, with the evidence for each claim.
   ran locally (guide §4).
 - Merged to `main` as the "Ossuary v0.1.0: first functional build" squash.
 
+### v0.1.0 released
+
+- Tag `v0.1.0` published as a GitHub Release:
+  <https://github.com/Perchemop/ossuary-tui/releases/tag/v0.1.0>
+- Release workflow run
+  [42103857872](https://github.com/Perchemop/ossuary-tui/actions/runs/42103857872):
+  all four targets built (`linux-x86_64`, `linux-arm64`, `macos-arm64`,
+  `windows-x86_64`), the release-asset scan passed, and the release was
+  published with `SHA256SUMS.txt`. The first attempt failed only because the
+  macOS runner could not be acquired (GitHub capacity); a re-run succeeded.
+- **Smoke test of the published artefact** (this ARM machine): the
+  `ossuary-linux-arm64` binary prints `ossuary 0.1.0` for `--version`, prints
+  help, and under a pseudo-terminal enters the alternate screen, hides the
+  cursor and paints falling glyphs — 37 KB of frame output in 2.5 s.
+- Token ledger recorded `0.1.0` (no per-release token instrumentation yet; the
+  figure is recorded honestly as 0 rather than invented).
+
 ### Next
 
-- Tag and publish `v0.1.0`.
 - Begin v0.2.0 items from `ROADMAP.md`.
+- A hands-on look at the macOS and Windows artefacts on those systems.
 
 ### Process note
 

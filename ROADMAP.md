@@ -6,7 +6,9 @@ scope in `docs/scope.md`.
 
 ## Status
 
-- **v0.1.0 — first functional test build**: shipped (see `CHANGELOG.md`).
+- **v0.1.0 — first functional test build**: shipped and published (see
+  `CHANGELOG.md` and the
+  [v0.1.0 release](https://github.com/Perchemop/ossuary-tui/releases/tag/v0.1.0)).
 - **v1 scope readiness: ~75%** (verified: rain, glyphs, art lifecycle, controls,
   persistence, user art, version/notes, crash + update crates, CI. Unverified:
   hands-on macOS/Windows.)

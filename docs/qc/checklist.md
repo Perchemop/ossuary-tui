@@ -11,8 +11,11 @@ Run before a release. Record the result and the CI run id below.
 
 ## Terminal smoke test (primary OS, by hand)
 
-- [ ] `ossuary` starts and fills the screen with falling characters
-- [ ] An art piece is typed into existence, held and dissolved
+- [x] `ossuary --version` and `--help` print plain text; the published binary
+      runs (verified on the ARM Linux artefact, 2026-11-06)
+- [x] `ossuary` starts, enters the alternate screen and paints falling
+      characters (verified under a pseudo-terminal, 2026-11-06)
+- [ ] An art piece is typed into existence, held and dissolved (to confirm by hand)
 - [ ] `space` pauses; `q` quits and the terminal is restored (cursor visible,
       no leftover raw mode, original screen back)
 - [ ] `g` cycles glyph sets; `+`/`-`, `[`/`]`, `f`, `m` change the look live
