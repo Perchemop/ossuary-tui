@@ -53,8 +53,30 @@ Append-only log of work done, with the evidence for each claim.
 
 ### Next
 
-- Begin v0.2.0 items from `ROADMAP.md`.
 - A hands-on look at the macOS and Windows artefacts on those systems.
+
+## 2026-11-06 — Session 2: v0.2.0 supply-chain gate + bigger art pack
+
+**Goal:** close the v0.2.0 items (cargo-deny gate, more original art).
+
+### Done
+
+- **Blocking `cargo-deny` gate** added to CI (`deny.toml` licence allow-list
+  extended with `Unlicense`, `0BSD`, `OpenSSL` to match the real tree).
+- **Four new original art pieces** (`ghost`, `key`, `moon`, `gem`); the
+  built-in pack is now ten pieces.
+- `ossuary` and `ossuary-core` bumped to 0.2.0; `Cargo.lock` updated in step.
+- CHANGELOG, ROADMAP, README and ATTRIBUTION updated.
+
+### Evidence
+
+- CI `check` run: recorded below once green (format, clippy, tests, cargo-deny,
+  release build, scans).
+
+### Next
+
+- Tag and publish `v0.2.0`.
+- Begin v0.3.0 (art rotation modes, colour drift, art titles).
 
 ### Process note
 

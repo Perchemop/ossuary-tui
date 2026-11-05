@@ -5,6 +5,30 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-11-06
+
+Second release: a stricter supply-chain gate and a larger art pack.
+
+### Added
+
+- **Blocking `cargo-deny` gate** in CI. Licences, security advisories, duplicate
+  bans and dependency sources are checked on every pull request, so a GPL
+  dependency or a yanked crate can no longer merge unnoticed.
+- **Four more original art pieces**: `ghost`, `key`, `moon` and `gem` — ten
+  hand-typed pieces in total.
+
+### Changed
+
+- `ossuary` and `ossuary-core` bumped to **0.2.0**.
+- `deny.toml` licence allow-list extended (`Unlicense`, `0BSD`, `OpenSSL`) to
+  match the permissive licences actually present in the dependency tree.
+
+### Known limitations
+
+- macOS and Windows artefacts are produced by CI but have not yet been tried
+  hands-on on those systems.
+- Token metrics remain recorded as 0 (no per-release instrumentation yet).
+
 ## [0.1.0] - 2026-11-06
 
 First functional test build. Ossuary is a terminal "screen" that rains

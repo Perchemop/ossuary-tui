@@ -37,6 +37,12 @@ jobs:
       - name: Tests (headless, no display)
         run: cargo test --workspace
 
+      - name: Cargo deny (licences, advisories, bans, sources)
+        uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2
+        with:
+          command: check
+          arguments: --all-features
+
       - name: Build release binary (primary OS)
         run: cargo build --release -p ossuary
 

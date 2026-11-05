@@ -2,9 +2,10 @@
 
 **Ossuary** turns your terminal into a screen of falling characters that
 periodically assemble into hand-typed ASCII art — a skull, a set of bones, a
-cat, a little candle — in crisp monochrome, with a soft glitchy flicker. Think
-of it as a matrix-style screensaver, but instead of endless katakana it types
-real pictures out of punctuation and then lets them dissolve back into the rain.
+cat, a little candle, a ghost — in crisp monochrome, with a soft glitchy
+flicker. Think of it as a matrix-style screensaver, but instead of endless
+katakana it types real pictures out of punctuation and then lets them dissolve
+back into the rain.
 
 ## Why you might like it
 
