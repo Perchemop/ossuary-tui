@@ -29,6 +29,13 @@ repository (same shape as the other suite apps).
 **Why:** Consistency with the suite (guide §7); the guide §12.1 note about a
 submodule is not yet adopted here.
 
+## 2026-11-06 — D-006: cargo-deny is a blocking gate
+
+**Decision:** `cargo-deny check` runs as a required step of the CI `check` job.
+**Why:** Guide §II.20.4 asks for a dependency/licence gate. Making it blocking
+means a copyleft dependency, a yanked crate or an unexpected licence fails the
+pull request rather than being noticed at release time.
+
 ## 2026-11-06 — D-005: Dual licence MIT OR Apache-2.0
 
 **Decision:** Ossuary is licensed MIT OR Apache-2.0.

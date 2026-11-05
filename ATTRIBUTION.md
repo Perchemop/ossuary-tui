@@ -16,6 +16,17 @@ is complete (guide §2.2, §II.19.3).
 | `ureq` | 3 | MIT OR Apache-2.0 | Synchronous HTTP for the optional update check / crash submit |
 | `crossterm` | 0.28 | MIT | Terminal raw mode, colours, cursor and events |
 
+Notable transitive dependencies pulled in by `ureq`'s default TLS stack:
+
+| Crate | Licence | Purpose |
+|-------|---------|---------|
+| `rustls` / `rustls-webpki` | Apache-2.0 OR ISC | TLS for the update check |
+| `ring` | ISC AND MIT AND OpenSSL (permissive) | Cryptography for TLS |
+| `webpki-roots` | MPL-2.0 | Bundled TLS root certificates |
+| `icu_*` / `zerovec` / `writeable` | Unicode-3.0 | IDNA/URL handling |
+| `memchr` | MIT OR Unlicense | Fast byte search |
+| `adler2` | 0BSD OR MIT OR Apache-2.0 | Compression checksum |
+
 The full transitive dependency list, with licences, is emitted as an SBOM
 (`cargo tree`) by CI and can be regenerated with `cargo tree --workspace`. A
 `deny.toml` allows only permissive licences (plus MPL-2.0 and the bundled font

@@ -160,6 +160,19 @@ impl ArtPack {
             ArtPiece::from_lines("candle", &["  (*)", "  | |", "  | |", "  |_|"]),
             ArtPiece::from_lines("goose", &["  ___", " (o o)", " /|_|\\", "  ^ ^"]),
             ArtPiece::from_lines("carriage", &["  ____", " |:::_|", "=|_|_|=", " o   o"]),
+            ArtPiece::from_lines(
+                "ghost",
+                &[" .---.", "| o o |", "|  ^  |", "|  ~  |", "|_____|"],
+            ),
+            ArtPiece::from_lines(
+                "key",
+                &[" .---.", "|  |  |", " '---'", "   |", "   |", "  ===", "   |"],
+            ),
+            ArtPiece::from_lines("moon", &["  ___", " /   \\", "| ( ) |", " \\___/"]),
+            ArtPiece::from_lines(
+                "gem",
+                &["   /\\", "  /  \\", " / /\\ \\", " \\ \\/ /", "  \\  /", "   \\/"],
+            ),
         ])
     }
 
@@ -287,8 +300,12 @@ mod tests {
     #[test]
     fn built_in_pack_is_populated_and_well_formed() {
         let pack = ArtPack::built_in();
-        assert!(pack.len() >= 4);
-        assert!(pack.index_of("skull").is_some());
+        assert!(pack.len() >= 8);
+        for name in [
+            "skull", "bones", "cat", "candle", "goose", "carriage", "ghost", "key", "moon", "gem",
+        ] {
+            assert!(pack.index_of(name).is_some(), "missing built-in piece {name}");
+        }
         for piece in pack.pieces() {
             assert!(!piece.is_empty(), "piece {} must have ink", piece.name());
             assert!(piece.ink_count() > 0);
