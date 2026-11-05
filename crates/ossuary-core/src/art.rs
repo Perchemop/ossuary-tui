@@ -166,12 +166,21 @@ impl ArtPack {
             ),
             ArtPiece::from_lines(
                 "key",
-                &[" .---.", "|  |  |", " '---'", "   |", "   |", "  ===", "   |"],
+                &[
+                    " .---.", "|  |  |", " '---'", "   |", "   |", "  ===", "   |",
+                ],
             ),
             ArtPiece::from_lines("moon", &["  ___", " /   \\", "| ( ) |", " \\___/"]),
             ArtPiece::from_lines(
                 "gem",
-                &["   /\\", "  /  \\", " / /\\ \\", " \\ \\/ /", "  \\  /", "   \\/"],
+                &[
+                    "   /\\",
+                    "  /  \\",
+                    " / /\\ \\",
+                    " \\ \\/ /",
+                    "  \\  /",
+                    "   \\/",
+                ],
             ),
         ])
     }
@@ -304,7 +313,10 @@ mod tests {
         for name in [
             "skull", "bones", "cat", "candle", "goose", "carriage", "ghost", "key", "moon", "gem",
         ] {
-            assert!(pack.index_of(name).is_some(), "missing built-in piece {name}");
+            assert!(
+                pack.index_of(name).is_some(),
+                "missing built-in piece {name}"
+            );
         }
         for piece in pack.pieces() {
             assert!(!piece.is_empty(), "piece {} must have ink", piece.name());

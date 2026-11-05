@@ -8,8 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  # The authoritative check for `ci.sh` (see .ci-required.txt): format, lint,
-  # headless tests, a release build of the primary-OS binary and the two scans.
+  # The authoritative check for `ci.sh` (see .ci-required.txt): lint, tests,
+  # the dependency gate, a release build of the primary-OS binary, the two
+  # scans, and formatting.
   check:
     name: check
     runs-on: ubuntu-latest
@@ -28,9 +29,8 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
 
-      - name: Check formatting
-        run: cargo fmt --all -- --check
-
+      # Compile/lint/test first, so a formatting-only problem still comes back
+      # with the full build signal in the same run.
       - name: Clippy (no warnings)
         run: cargo clippy --all-targets --workspace -- -D warnings
 
@@ -53,7 +53,7 @@ jobs:
           path: target/release/ossuary
           if-no-files-found: error
 
-      # The lockfile is generated here and upload it so it can be committed
+      # The lockfile is generated here and uploaded so it can be committed
       # without ever running cargo on the maintainer's machine (guide §4).
       - name: Upload generated Cargo.lock
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -77,3 +77,26 @@ jobs:
 
       - name: Personal data scan (tracked files)
         run: bash scripts/scan-personal-data.sh
+
+      # Formatting is checked last (and is still a hard gate). If it fails, the
+      # next step uploads rustfmt's output so the maintainer — whose machine
+      # cannot run cargo — can apply it offline. See docs/process-feedback.md.
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Prepare rustfmt output for offline application
+        if: failure()
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/fmt && mkdir -p /tmp/fmt
+          tar --exclude=./target --exclude=./.git -cf - . | (cd /tmp/fmt && tar -xf -)
+          (cd /tmp/fmt && cargo fmt --all)
+          (cd /tmp/fmt && tar -czf /tmp/rustfmt-src.tgz $(git -C "$GITHUB_WORKSPACE" ls-files '*.rs'))
+
+      - name: Upload rustfmt output
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rustfmt-src
+          path: /tmp/rustfmt-src.tgz
+          if-no-files-found: warn
