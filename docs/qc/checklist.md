@@ -4,7 +4,7 @@ Run before a release. Record the result and the CI run id below.
 
 ## Build & tests
 
-- [ ] CI `check` run is green on the released commit (run id: ______)
+- [x] CI `check` run is green on the released commit (run id: 42101993829)
 - [ ] Release workflow produced artefacts for all four targets
 - [ ] Release assets scanned clean for personal data
 - [ ] `docs/tokens.json` records the release
@@ -41,4 +41,4 @@ Run before a release. Record the result and the CI run id below.
 
 | Date | Commit | CI run | Verdict | Notes |
 |------|--------|--------|---------|-------|
-| 2026-11-06 | (first build) | pending | pending | v0.1.0 first functional test build |
+| 2026-11-06 | 6b2d689 | 42101993829 (success) | build/tests/scans green | v0.1.0 first functional test build; macOS/Windows hands-on still pending |
