@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  # The authoritative check for `ci.sh` (see .ci-required.txt): format, lint,
+  # headless tests, a release build of the primary-OS binary and the two scans.
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # whole-history scans (guide II.29)
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+
+      # TEMPORARY BOOTSTRAP (remove once the formatted sources are committed):
+      # the maintainer's machine cannot run cargo, so CI formats the tree here
+      # and uploads the result to be committed. See docs/process-feedback.md.
+      - name: rustfmt bootstrap (temporary)
+        run: |
+          cargo fmt --all
+          tar -czf /tmp/rustfmt-src.tgz $(git ls-files '*.rs')
+
+      - name: Upload formatted sources (temporary)
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rustfmt-src
+          path: /tmp/rustfmt-src.tgz
+          if-no-files-found: error
+
+      - name: Clippy (no warnings)
+        run: cargo clippy --all-targets --workspace -- -D warnings
+
+      - name: Tests (headless, no display)
+        run: cargo test --workspace
+
+      - name: Build release binary (primary OS)
+        run: cargo build --release -p ossuary
+
+      - name: Upload release binary artefact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ossuary-linux-x86_64
+          path: target/release/ossuary
+          if-no-files-found: error
+
+      # The lockfile is generated here and upload it so it can be committed
+      # without ever running cargo on the maintainer's machine (guide §4).
+      - name: Upload generated Cargo.lock
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ossuary-cargo-lock
+          path: Cargo.lock
+          if-no-files-found: error
+
+      - name: SBOM (dependency list)
+        run: cargo tree --workspace > /tmp/dependency-sbom.txt
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ossuary-sbom
+          path: /tmp/dependency-sbom.txt
+          if-no-files-found: error
+
+      - name: Secret scan (tracked files)
+        run: bash scripts/scan-secrets.sh
+
+      - name: Personal data scan (tracked files)
+        run: bash scripts/scan-personal-data.sh

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Ossuary app icon">
+  <title>Ossuary</title>
+  <rect width="128" height="128" rx="24" fill="#0B0B0B"/>
+  <g fill="none" stroke="#F2F2F2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 58 a28 31 0 1 1 60 0 v15 a9 9 0 0 1 -9 9 h-42 a9 9 0 0 1 -9 -9 z"/>
+    <circle cx="51" cy="61" r="7" fill="#F2F2F2" stroke="none"/>
+    <circle cx="77" cy="61" r="7" fill="#F2F2F2" stroke="none"/>
+    <path d="M64 71 l-5.5 8 h11 z" fill="#F2F2F2" stroke="none"/>
+    <path d="M54 84 v6 M64 84 v6 M74 84 v6"/>
+  </g>
+</svg>

@@ -1,0 +1,24 @@
+name: Accessibility issue
+description: A keyboard, contrast, screen-reader or motion problem.
+title: "[a11y] "
+labels: ["accessibility"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is hard to use?
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Terminal, OS and assistive technology
+      placeholder: "e.g. Linux, GNOME Terminal, Orca"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What would make it usable?
+    validations:
+      required: false

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ossuary mark: a minimal skull">
+  <title>Ossuary</title>
+  <g fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- cranium -->
+    <path d="M14 28 a18 20 0 1 1 36 0 v10 a6 6 0 0 1 -6 6 h-24 a6 6 0 0 1 -6 -6 z" />
+    <!-- eye sockets -->
+    <circle cx="25" cy="30" r="4.5" fill="currentColor" stroke="none" />
+    <circle cx="39" cy="30" r="4.5" fill="currentColor" stroke="none" />
+    <!-- nasal notch -->
+    <path d="M32 37 l-3.5 5 h7 z" fill="currentColor" stroke="none" />
+  </g>
+  <!-- teeth line -->
+  <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+    <path d="M26 46 v4 M32 46 v4 M38 46 v4" />
+  </g>
+</svg>

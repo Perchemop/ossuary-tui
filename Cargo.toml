@@ -1,0 +1,18 @@
+# Ossuary workspace. The simulation, glyph sets and art model live in
+# `crates/ossuary-core` and are fully headless: every workflow test runs with no
+# terminal, no display and no network. The terminal shell in `apps/ossuary` only
+# paints frames and collects keys (guide §K.3 / §K.13).
+[workspace]
+resolver = "2"
+members = [
+    "apps/ossuary",
+    "crates/crash-report",
+    "crates/ossuary-core",
+    "crates/update-check",
+]
+
+# One shared release profile keeps artefacts identical across the suite.
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true

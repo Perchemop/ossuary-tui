@@ -1,0 +1,26 @@
+[package]
+name = "ossuary"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+description = "Ossuary - a terminal ASCII-art rain screen with a hand-typed, monochrome, glitch aesthetic."
+repository = "https://github.com/Perchemop/ossuary-tui"
+readme = "../../README.md"
+
+[[bin]]
+name = "ossuary"
+path = "src/main.rs"
+
+[dependencies]
+# Core domain: simulation, glyph sets, art model, theme persistence. Pure Rust,
+# headless-tested.
+ossuary-core = { path = "../../crates/ossuary-core" }
+
+# Shared suite infrastructure (guide §7): crash capture + update check.
+crash-report = { path = "../../crates/crash-report" }
+update-check = { path = "../../crates/update-check" }
+
+# Terminal control: raw mode, alternate screen, colours, cursor and events.
+# Cross-platform (Linux, macOS, Windows) and dependency-light.
+crossterm = "0.28"

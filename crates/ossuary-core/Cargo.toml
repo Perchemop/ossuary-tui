@@ -1,0 +1,18 @@
+[package]
+name = "ossuary-core"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+description = "Ossuary domain: the falling-character rain simulation, glyph sets, hand-typed ASCII art pieces and theme persistence. Pure Rust, headless-tested."
+repository = "https://github.com/Perchemop/ossuary-tui"
+readme = "../../README.md"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+
+[dev-dependencies]
+# Workflow tests use an isolated temporary directory (guide §K.11.4).
+tempfile = "3"

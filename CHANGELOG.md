@@ -1,0 +1,52 @@
+# Changelog
+
+All notable changes to Ossuary are recorded here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.1.0] - 2026-11-06
+
+First functional test build. Ossuary is a terminal "screen" that rains
+monochrome ASCII characters which periodically assemble into hand-typed art
+pieces. This release establishes the working core and the path to release.
+
+### Added
+
+- **Falling-character rain**: per-column heads with fading trails, a
+  deterministic simulation and a live resize path.
+- **Glyph sets**: `bone`, `shade`, `digits`, `letters` and `ascii`, cyclable at
+  runtime.
+- **Original art pieces**: six hand-typed pieces — `skull`, `bones`, `cat`,
+  `candle`, `goose` and `carriage` — typed into existence, held, then dissolved.
+- **Live keyboard control**: pause, glyph set, summon, auto-art, speed, density,
+  flicker, palette, save.
+- **Theme persistence**: settings saved to `theme.json` and reloaded on start.
+- **User art packs**: `*.txt` files in the art directory are loaded as pieces.
+- **In-app version and release notes**: the version sits in the bottom-right
+  corner; `V` opens the changelog and token metrics.
+- **Crash capture**: a panic hook writes a scrubbed crash log.
+- **Update check**: `u` queries GitHub Releases and fails soft when offline.
+- **CI and release workflows**: format, clippy (no warnings), headless tests, a
+  release build, artefact upload, secret and personal-data scans, and
+  cross-platform release packaging.
+
+### Known limitations
+
+- Only the Linux binary is verified hands-on so far; macOS and Windows artefacts
+  are produced by the release workflow and have not yet been tried on those
+  systems.
+- The update check has no in-app one-click installer yet; it reports that an
+  update exists and where to get it.
+- `cargo-deny` is configured but not yet a blocking CI step.
+
+### Try it
+
+Download the Linux artefact from this release, run `./ossuary`, and press `?` to
+see the keys. Press `g`, `n` and `s` to change the glyphs, summon a picture and
+save your settings.
+
+### Token usage
+
+- Cumulative since project start: see `docs/tokens.json`.
+- This release: recorded by the release workflow.

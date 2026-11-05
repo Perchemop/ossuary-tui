@@ -1,0 +1,37 @@
+# Local-only files (never commit, never push).
+# The clean-room process documents live outside this repository and must stay
+# there.
+guide.md
+addendum.md
+addendum.md.archive
+
+# Secrets
+.env
+.env.*
+!.env.example
+secrets/
+*.keystore
+*.jks
+*.p12
+*.pem
+
+# Rust / build
+/target/
+**/*.rs.bk
+*.profraw
+
+# Local theme/crash output if someone points the config dir at the repo
+theme.json
+logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Python bytecode caches — a .pyc embeds an absolute source path, which is a
+# personal-data leak in a public repository (guide II.29).
+__pycache__/
+*.pyc
