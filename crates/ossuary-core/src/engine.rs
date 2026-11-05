@@ -440,8 +440,10 @@ mod tests {
     #[test]
     fn set_config_re_resolves_glyphs_and_keeps_unknown_as_is() {
         let mut engine = Engine::new(20, 8, Config::default(), ArtPack::empty(), 2);
-        let mut config = Config::default();
-        config.glyph_set = "letters".to_string();
+        let mut config = Config {
+            glyph_set: "letters".to_string(),
+            ..Config::default()
+        };
         engine.set_config(config.clone());
         assert_eq!(engine.glyphs().name(), "letters");
         // An unknown name must not change the active set.
