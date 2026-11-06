@@ -375,7 +375,10 @@ mod tests {
         let pack = ArtPack::built_in();
         assert!(pack.len() >= 5);
         for name in ["skull", "crossbones", "cat", "candle", "moon", "ghost"] {
-            assert!(pack.index_of(name).is_some(), "missing built-in piece {name}");
+            assert!(
+                pack.index_of(name).is_some(),
+                "missing built-in piece {name}"
+            );
         }
         for piece in pack.pieces() {
             assert!(!piece.is_empty(), "piece {} must have ink", piece.name());

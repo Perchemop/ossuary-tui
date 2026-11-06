@@ -8,7 +8,7 @@
 
 use std::collections::VecDeque;
 
-use crate::art::{tone, ArtLibrary, ArtPiece};
+use crate::art::{ArtLibrary, ArtPiece, tone};
 use crate::config::Config;
 use crate::glyphs::GlyphSet;
 use crate::rng::Rng;
@@ -130,7 +130,13 @@ impl Column {
     /// Spawn a column. `from_top` places it just above the top edge (a fresh
     /// column re-entering the screen); otherwise it is distributed anywhere on
     /// screen so the first frame is already full.
-    fn spawn(rng: &mut Rng, height: usize, config: &Config, glyphs: GlyphSet, from_top: bool) -> Self {
+    fn spawn(
+        rng: &mut Rng,
+        height: usize,
+        config: &Config,
+        glyphs: GlyphSet,
+        from_top: bool,
+    ) -> Self {
         let max_trail = config.trail.max(MIN_TRAIL);
         let span = max_trail.saturating_sub(MIN_TRAIL) + 1;
         let len = MIN_TRAIL + rng.below(span);
@@ -348,7 +354,9 @@ impl Engine {
     }
 
     fn reposition_art(&mut self) {
-        let (w, h) = self.active_piece().map_or((0, 0), |piece| (piece.width(), piece.height()));
+        let (w, h) = self
+            .active_piece()
+            .map_or((0, 0), |piece| (piece.width(), piece.height()));
         self.art_x = self.width.saturating_sub(w) / 2;
         self.art_y = self.height.saturating_sub(h) / 2;
     }
