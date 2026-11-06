@@ -15,6 +15,10 @@ from verified evidence (a named test or a CI run), never from intention.
 | CAP-008 | version constant `ossuary_core::VERSION`; painted in the corner (UI, verified by hand) | met |
 | CAP-009 | `RELEASE_NOTES`/`TOKEN_LEDGER` embedded via `include_str!`; overlay verified by hand | met |
 | CAP-010 | `crash-report` unit tests (scrubbing, payload) | met |
+| CAP-014 | `workflow_art_rotation_modes`, `config::tests::art_mode_cycles_and_unknown_values_reset` | met |
+| CAP-015 | `workflow_colour_drift_varies_the_ramp` | met |
+| CAP-016 | `workflow_art_title_is_drawn_under_the_piece` | met |
+| CAP-017 | first-run detection in the shell (UI; verified by hand) | met |
 | CAP-011 | not implemented by design — fully offline | out of scope |
 | CAP-012 | not published by design — source distribution only | out of scope |
 

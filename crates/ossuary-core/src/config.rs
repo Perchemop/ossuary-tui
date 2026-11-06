@@ -39,7 +39,18 @@ pub struct Config {
     pub art_interval: u32,
     /// Monochrome (black & white) rather than the retro-green palette.
     pub monochrome: bool,
+    /// Art rotation mode: `"sequential"`, `"random"` or `"single"`.
+    pub art_mode: String,
+    /// Piece to keep showing when `art_mode` is `"single"`.
+    pub art_piece: String,
+    /// Per-column brightness drift within the monochrome ramp.
+    pub color_drift: bool,
+    /// Draw the piece's name beneath it while it is on screen.
+    pub show_titles: bool,
 }
+
+/// The valid values of [`Config::art_mode`].
+pub const ART_MODES: [&str; 3] = ["sequential", "random", "single"];
 
 impl Default for Config {
     fn default() -> Self {
@@ -52,6 +63,10 @@ impl Default for Config {
             show_art: true,
             art_interval: 320,
             monochrome: true,
+            art_mode: "sequential".to_string(),
+            art_piece: String::new(),
+            color_drift: false,
+            show_titles: false,
         }
     }
 }
@@ -65,7 +80,19 @@ impl Config {
         self.trail = self.trail.clamp(TRAIL_MIN, TRAIL_MAX);
         self.flicker = self.flicker.clamp(0.0, 1.0);
         self.art_interval = self.art_interval.clamp(ART_INTERVAL_MIN, ART_INTERVAL_MAX);
+        if !ART_MODES.contains(&self.art_mode.as_str()) {
+            self.art_mode = ART_MODES[0].to_string();
+        }
         self
+    }
+
+    /// Cycle the art rotation mode: sequential → random → single → sequential.
+    pub fn cycle_art_mode(&mut self) {
+        let index = ART_MODES
+            .iter()
+            .position(|mode| *mode == self.art_mode)
+            .unwrap_or(0);
+        self.art_mode = ART_MODES[(index + 1) % ART_MODES.len()].to_string();
     }
 
     /// Nudge the speed up one step.
@@ -267,5 +294,24 @@ mod tests {
         let config: Config = serde_json::from_str("{\"speed\": 2.0}").expect("parse");
         assert_eq!(config.speed, 2.0);
         assert_eq!(config.glyph_set, Config::default().glyph_set);
+    }
+
+    #[test]
+    fn art_mode_cycles_and_unknown_values_reset() {
+        let mut config = Config::default();
+        assert_eq!(config.art_mode, "sequential");
+        config.cycle_art_mode();
+        assert_eq!(config.art_mode, "random");
+        config.cycle_art_mode();
+        assert_eq!(config.art_mode, "single");
+        config.cycle_art_mode();
+        assert_eq!(config.art_mode, "sequential");
+
+        let bad = Config {
+            art_mode: "sideways".to_string(),
+            ..Config::default()
+        }
+        .sanitized();
+        assert_eq!(bad.art_mode, "sequential");
     }
 }

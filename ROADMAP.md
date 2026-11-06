@@ -18,7 +18,7 @@ scope in `docs/scope.md`.
 | v0.1.0 | Rain, glyph sets, original art + lifecycle, live controls, theme persistence, user art, version/notes overlay, crash crate, CI | done |
 | v0.2.0 | `Cargo.lock` committed; `cargo-deny` a blocking gate; ten original art pieces | done |
 | v0.3.0 | **TUI-only distribution**: no published binaries, fully offline (update check removed) | done |
-| v0.4.0 | Multiple art-rotation modes; per-column colour drift within the monochrome ramp; optional art titles; a first-run "welcome" overlay | planned |
+| v0.4.0 | Art-rotation modes (sequential/random/single); per-column colour drift; optional art titles; a first-run welcome overlay | done |
 | v1.0.0 | All §9 quality gates and the §2.5 legal checklist clean; README visuals; broad terminal/OS coverage | planned |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source

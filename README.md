@@ -51,6 +51,9 @@ Press `q` to quit, or `?` for the full list of keys.
   (`+` / `-`), make it denser or sparser (`[` / `]`), change the flicker (`f`),
   and switch between monochrome and the classic green (`m`).
 - **Save your look.** Press `s` and your settings are remembered next time.
+- **Vary the art.** Choose how pictures are picked (`r`: sequential, random, or
+  one favourite on repeat), add a little depth with colour drift (`d`), and
+  label the current piece with its name (`t`).
 - **Add your own art.** Save any multi-line text drawing as a `.txt` file in the
   Ossuary art folder (see below) and it joins the rotation.
 
@@ -86,6 +89,9 @@ Your own `.txt` art files go in the `art/` folder inside that directory.
 | `[` / `]` | sparser / denser |
 | `f` | cycle flicker |
 | `m` | monochrome / green |
+| `r` | next art rotation mode |
+| `d` | toggle colour drift |
+| `t` | toggle art titles |
 | `s` | save settings |
 | `V` | changelog |
 | `?` | help |
