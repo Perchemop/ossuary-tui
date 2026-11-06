@@ -181,6 +181,8 @@ fn workflow_art_rotation_modes() {
     // Single: the same piece is shown every time.
     let single = Config {
         show_art: false,
+        show_phrases: false,
+        show_titles: true,
         art_mode: "single".to_string(),
         art_piece: "moon".to_string(),
         ..Config::default()
