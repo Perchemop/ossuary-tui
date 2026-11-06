@@ -455,7 +455,7 @@ impl Engine {
                 } else {
                     1
                 };
-                let intensity = (i16::from(base) + i16::from(column.drift)).clamp(1, 3) as u8;
+                let intensity = (base as i16 + column.drift).clamp(1, 3) as u8;
                 frame.set(x, row as usize, Cell { ch, intensity });
             }
         }
