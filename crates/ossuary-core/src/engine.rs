@@ -171,8 +171,10 @@ pub struct Engine {
     art_is_phrase: bool,
     art_revealed: usize,
     art_timer: u32,
-    art_x: usize,
-    art_y: usize,
+    /// Screen-space X offset of the summoned piece (for tests/renderers).
+    pub art_x: usize,
+    /// Screen-space Y offset of the summoned piece (for tests/renderers).
+    pub art_y: usize,
     /// Recently shown (phrase-flag, index) pairs, to avoid repeating.
     recent: VecDeque<(bool, usize)>,
     tick: u64,
@@ -539,12 +541,17 @@ mod tests {
     #[test]
     fn set_config_re_resolves_glyphs_and_keeps_unknown_as_is() {
         let mut engine = Engine::new(20, 8, Config::default(), ArtLibrary::empty(), 2);
-        let mut config = Config::default();
-        config.glyph_set = "letters".to_string();
+        let mut config = Config {
+            glyph_set: "letters".to_string(),
+            ..Config::default()
+        };
         engine.set_config(config.clone());
         assert_eq!(engine.glyphs().name(), "letters");
         // An unknown name must not change the active set.
-        config.glyph_set = "does-not-exist".to_string();
+        let config = Config {
+            glyph_set: "does-not-exist".to_string(),
+            ..Config::default()
+        };
         engine.set_config(config);
         assert_eq!(engine.glyphs().name(), "letters");
     }
@@ -582,8 +589,10 @@ mod tests {
 
     #[test]
     fn drift_shifts_rendered_frames() {
-        let mut config = Config::default();
-        config.color_drift = true;
+        let config = Config {
+            color_drift: true,
+            ..Config::default()
+        };
         let mut engine = Engine::new(60, 18, config, ArtLibrary::empty(), 321);
         for _ in 0..120 {
             engine.step();
@@ -707,18 +716,5 @@ mod tests {
             }
         }
         assert_eq!(rain_heads, 0, "rain heads are suppressed behind the piece");
-    }
-
-    fn count_intensity(engine: &Engine, intensity: u8) -> usize {
-        let frame = engine.frame();
-        let mut total = 0;
-        for y in 0..frame.height() {
-            for x in 0..frame.width() {
-                if frame.cell(x, y).intensity == intensity {
-                    total += 1;
-                }
-            }
-        }
-        total
     }
 }

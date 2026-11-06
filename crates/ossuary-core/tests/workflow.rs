@@ -6,20 +6,6 @@
 
 use ossuary_core::{ArtLibrary, ArtPack, ArtState, Cell, Config, Engine};
 
-/// Count the cells whose brightness band equals `intensity`.
-fn count_intensity(engine: &Engine, intensity: u8) -> usize {
-    let frame = engine.frame();
-    let mut total = 0;
-    for y in 0..frame.height() {
-        for x in 0..frame.width() {
-            if frame.cell(x, y).intensity == intensity {
-                total += 1;
-            }
-        }
-    }
-    total
-}
-
 #[test]
 fn workflow_theme_save_load_roundtrip() {
     let dir = tempfile::tempdir().expect("tempdir");
