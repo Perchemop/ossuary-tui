@@ -22,6 +22,7 @@ mod engine;
 mod error;
 mod glyphs;
 mod rng;
+mod svg;
 
 pub use art::{ArtPack, ArtPiece};
 pub use config::Config;
@@ -29,6 +30,7 @@ pub use engine::{ArtState, Cell, Engine, Frame};
 pub use error::CoreError;
 pub use glyphs::GlyphSet;
 pub use rng::Rng;
+pub use svg::render_svg;
 
 pub use config::{
     ART_INTERVAL_MAX, ART_INTERVAL_MIN, SPEED_MAX, SPEED_MIN, TRAIL_MAX, TRAIL_MIN, config_dir,

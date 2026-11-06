@@ -5,6 +5,20 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-11-06
+
+### Added
+
+- **Preview renderer**: the headless core can render a frame to a standalone
+  SVG (`ossuary_core::render_svg`), so the look can be captured and reviewed
+  without a terminal. Fully unit-tested.
+- **README preview images** under `docs/images/`, generated in CI from a fixed
+  seed with `cargo run --example preview`.
+
+### Changed
+
+- `ossuary` and `ossuary-core` bumped to **0.5.0**.
+
 ## [0.4.0] - 2026-11-06
 
 More art variety, plus first-run polish.

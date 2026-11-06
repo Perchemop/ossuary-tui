@@ -48,6 +48,18 @@ jobs:
       - name: Build (release)
         run: cargo build --release
 
+      # Regenerate the README preview images so they can be reviewed and
+      # committed without a terminal (the renderer lives in the headless core).
+      - name: Generate preview images
+        run: cargo run -p ossuary --release --example preview -- /tmp/preview
+
+      - name: Upload preview images
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ossuary-preview
+          path: /tmp/preview/*.svg
+          if-no-files-found: error
+
       # The lockfile is generated here and uploaded so it can be committed
       # without ever running cargo on the maintainer's machine (guide §4).
       - name: Upload generated Cargo.lock
