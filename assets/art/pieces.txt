@@ -219,6 +219,15 @@
   \             /
    `-----------'
 
+== cross
+    .
+   :$$.
+  .$$$$.
+ $$$+$$$$
+  $$$$.
+   $$$
+    $
+
 == phrase one
    life is short.
    type a skull.
