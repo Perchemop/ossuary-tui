@@ -15,6 +15,7 @@ from verified evidence (a named test or a CI run), never from intention.
 | CAP-008 | version constant `ossuary_core::VERSION`; painted in the corner (UI, verified by hand) | met |
 | CAP-009 | `RELEASE_NOTES`/`TOKEN_LEDGER` embedded via `include_str!`; overlay verified by hand | met |
 | CAP-010 | `crash-report` unit tests (scrubbing, payload) | met |
+| CAP-018 | `svg::tests::{renders_svg_root_and_background, draws_glyphs_with_their_band_colour, escapes_xml_special_characters, empty_cells_emit_no_text}` | met |
 | CAP-014 | `workflow_art_rotation_modes`, `config::tests::art_mode_cycles_and_unknown_values_reset` | met |
 | CAP-015 | `workflow_colour_drift_varies_the_ramp` | met |
 | CAP-016 | `workflow_art_title_is_drawn_under_the_piece` | met |

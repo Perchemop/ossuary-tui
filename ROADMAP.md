@@ -19,7 +19,8 @@ scope in `docs/scope.md`.
 | v0.2.0 | `Cargo.lock` committed; `cargo-deny` a blocking gate; ten original art pieces | done |
 | v0.3.0 | **TUI-only distribution**: no published binaries, fully offline (update check removed) | done |
 | v0.4.0 | Art-rotation modes (sequential/random/single); per-column colour drift; optional art titles; a first-run welcome overlay | done |
-| v1.0.0 | All §9 quality gates and the §2.5 legal checklist clean; README visuals; broad terminal/OS coverage | planned |
+| v0.5.0 | SVG preview renderer + README preview images generated in CI | done |
+| v1.0.0 | All §9 quality gates and the §2.5 legal checklist clean; broad terminal coverage; owner accepts v1 scope | planned |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source
 > only** — there are no downloadable release binaries and no desktop installers.

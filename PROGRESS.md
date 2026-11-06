@@ -131,7 +131,32 @@ desktop releases."
 
 ### Next
 
-- v1.0.0: README visuals and the final §9 + §2.5 gate review.
+- v0.5.0: README preview images.
+
+## 2026-11-06 — Session 5: v0.5.0 — preview renderer and README images
+
+**Goal:** give the project a headless way to capture how it looks, and use it
+for the README.
+
+### Done
+
+- `ossuary_core::render_svg(frame, title)` — a pure, unit-tested SVG renderer
+  for a frame.
+- `apps/ossuary/examples/preview.rs` — a headless driver that writes the README
+  images from fixed seeds.
+- CI generates the images and uploads them as the `ossuary-preview` artefact,
+  so they can be reviewed and committed without a terminal.
+- `ossuary` / `ossuary-core` bumped to 0.5.0.
+
+### Evidence
+
+- CI `check` run: recorded once green.
+
+### Next
+
+- Commit the generated preview images into `docs/images/` and embed them in the
+  README.
+- v1.0.0: the final §9 + §2.5 gate review, pending owner acceptance.
 
 ### Process note
 
