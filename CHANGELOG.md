@@ -5,6 +5,18 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-11-06
+
+### Added
+
+- **Three new original art pieces**: `skeleton` (full-body figure with carved void eyes), `coffin` (coffin box with cross pattern), `tombstone` (grave marker with RIP in bright glyphs)
+- **Improved cat**: void eyes with shadow areas around the face
+- **Improved hourglass**: mid-tone characters in transition zones for smoother shading
+
+### Changed
+
+- **Ossuary core and apps bumped to 1.1.0**
+
 ## [1.0.0] - 2026-11-06
 
 First stable release. Ossuary is feature-complete for its v1 scope

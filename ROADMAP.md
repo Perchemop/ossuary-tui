@@ -10,6 +10,8 @@ scope in `docs/scope.md`.
 - **v1 scope complete.** Every in-scope capability is implemented and verified;
   the headless tests and a release build run on Linux, macOS and Windows in CI,
   and a pseudo-terminal smoke test proves the app runs and draws.
+- **v1.1.0 — new art pieces**: skeleton, coffin, tombstone added; cat and
+  hourglass refined with tone-mapped shading | done |
 
 ## Milestones
 
@@ -21,6 +23,7 @@ scope in `docs/scope.md`.
 | v0.4.0 | Art-rotation modes (sequential/random/single); per-column colour drift; optional art titles; a first-run welcome overlay | done |
 | v0.5.0 | SVG preview renderer + README preview images generated in CI | done |
 | v1.0.0 | §9 quality gates and the §2.5 legal checklist clean; cross-OS CI matrix + pty smoke test; v1 scope complete | done |
+| v1.1.0 | Three new original art pieces (skeleton, coffin, tombstone); cat and hourglass refined | done |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source
 > only** — there are no downloadable release binaries and no desktop installers.

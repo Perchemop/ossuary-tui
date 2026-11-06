@@ -1,6 +1,6 @@
 [package]
 name = "ossuary"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
@@ -15,7 +15,7 @@ path = "src/main.rs"
 [dependencies]
 # Core domain: simulation, glyph sets, art model, theme persistence. Pure Rust,
 # headless-tested.
-ossuary-core = { path = "../../crates/ossuary-core", version = "1.0.0" }
+ossuary-core = { path = "../../crates/ossuary-core", version = "1.1.0" }
 
 # Shared suite infrastructure (guide §7): crash capture only. Ossuary has no
 # network features at all — it is a self-contained, offline terminal toy.
