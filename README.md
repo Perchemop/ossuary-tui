@@ -10,6 +10,8 @@ rain.
 It is a terminal program (a TUI): you run it *in* your terminal, not as a
 desktop window.
 
+![Ossuary: columns of characters falling down the terminal](docs/images/ossuary-rain.svg)
+
 ## Why you might like it
 
 - **Free and open source.** No cost, no account, no trial limits. The source is
@@ -47,6 +49,8 @@ Press `q` to quit, or `?` for the full list of keys.
   head and a fading trail.
 - **See the pictures.** Every so often the characters gather into a complete
   picture, hold it for a moment, then melt away. Press `n` to summon one now.
+
+  ![Ossuary: a hand-typed skull emerging from the rain](docs/images/ossuary-art.svg)
 - **Change the mood.** Swap the character set (`g`), speed it up or slow it down
   (`+` / `-`), make it denser or sparser (`[` / `]`), change the flicker (`f`),
   and switch between monochrome and the classic green (`m`).
