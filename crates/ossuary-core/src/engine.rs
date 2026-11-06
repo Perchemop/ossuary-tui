@@ -628,7 +628,7 @@ mod tests {
             for x in 0..piece.width() {
                 if piece.glyph(x, y) != ' ' {
                     lit += 1;
-                    assert!(frame.cell(x, y).intensity != 0);
+                    assert!(frame.cell(engine.art_x + x, engine.art_y + y).intensity != 0);
                 }
             }
         }
