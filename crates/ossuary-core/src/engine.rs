@@ -602,7 +602,8 @@ mod tests {
         let mut config = Config::default();
         // Control the art manually rather than on a timer.
         config.show_art = false;
-        let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 5);
+        // Big enough frame for the largest built-in piece (crossbones: 29x19).
+        let mut engine = Engine::new(80, 40, config, ArtLibrary::built_in(), 5);
 
         engine.summon();
         assert_eq!(engine.art_state(), ArtState::Typing);
