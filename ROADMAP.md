@@ -24,6 +24,7 @@ scope in `docs/scope.md`.
 | v0.5.0 | SVG preview renderer + README preview images generated in CI | done |
 | v1.0.0 | §9 quality gates and the §2.5 legal checklist clean; cross-OS CI matrix + pty smoke test; v1 scope complete | done |
 | v1.1.0 | Three new original art pieces (skeleton, coffin, tombstone); cat and hourglass refined | done |
+| v1.2.0 | Three new original art pieces (rose, bell, book) | done |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source
 > only** — there are no downloadable release binaries and no desktop installers.
