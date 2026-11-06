@@ -10,7 +10,7 @@ use std::io;
 use std::path::Path;
 use std::process::ExitCode;
 
-use ossuary_core::{ArtPack, ArtState, Config, Engine, render_svg};
+use ossuary_core::{ArtLibrary, ArtState, Config, Engine, render_svg};
 
 /// A wide grid so the pictures have room to breathe.
 const COLS: usize = 96;
@@ -34,7 +34,7 @@ fn run(dir: &str) -> io::Result<()> {
     std::fs::create_dir_all(out)?;
 
     // The rain on its own.
-    let mut engine = Engine::new(COLS, ROWS, Config::default(), ArtPack::built_in(), 7);
+    let mut engine = Engine::new(COLS, ROWS, Config::default(), ArtLibrary::built_in(), 7);
     for _ in 0..48 {
         engine.step();
     }
@@ -51,7 +51,7 @@ fn run(dir: &str) -> io::Result<()> {
         art_piece: "skull".to_string(),
         ..Config::default()
     };
-    let mut engine = Engine::new(COLS, ROWS, config, ArtPack::built_in(), 3);
+    let mut engine = Engine::new(COLS, ROWS, config, ArtLibrary::built_in(), 3);
     engine.summon();
     for _ in 0..2_000 {
         engine.step();

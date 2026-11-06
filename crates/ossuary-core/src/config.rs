@@ -47,6 +47,8 @@ pub struct Config {
     pub color_drift: bool,
     /// Draw the piece's name beneath it while it is on screen.
     pub show_titles: bool,
+    /// Whether summoned art may be a text phrase rather than a picture.
+    pub show_phrases: bool,
 }
 
 /// The valid values of [`Config::art_mode`].
@@ -67,6 +69,7 @@ impl Default for Config {
             art_piece: String::new(),
             color_drift: false,
             show_titles: false,
+            show_phrases: true,
         }
     }
 }

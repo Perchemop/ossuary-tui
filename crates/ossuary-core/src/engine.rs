@@ -1,12 +1,14 @@
-//! The rain simulation: falling character columns, plus the art piece that is
-//! periodically typed into existence over them.
+//! The rain simulation: falling character columns, plus the art piece or text
+//! phrase that is periodically typed into existence over them.
 //!
 //! The engine holds no terminal state. Call [`Engine::step`] to advance one
 //! frame and [`Engine::frame`] to read the result; both are pure with respect
 //! to everything outside the engine, and both are deterministic for a given
-//! seed (guide §K.13, §M.5).
+//! seed (guide §M.5).
 
-use crate::art::{ArtPack, ArtPiece};
+use std::collections::VecDeque;
+
+use crate::art::{tone, ArtLibrary, ArtPiece};
 use crate::config::Config;
 use crate::glyphs::GlyphSet;
 use crate::rng::Rng;
@@ -17,11 +19,13 @@ const MIN_TRAIL: usize = 4;
 const HOLD_STEPS: u32 = 140;
 /// Steps a piece spends dissolving.
 const DISSOLVE_STEPS: u32 = 40;
-/// Inked glyphs revealed per step while a piece is being typed.
-const REVEAL_PER_STEP: usize = 3;
 /// Chance per step that an inactive column is re-rolled, so density is honoured
 /// over time rather than frozen forever.
 const REACTIVATE_CHANCE: f32 = 0.02;
+/// How many recently shown art pieces are avoided when picking the next one.
+const RECENT_KEEP: usize = 3;
+/// One summons in this many is a text phrase instead of a picture.
+const PHRASE_ODDS: usize = 4;
 
 /// One cell of a rendered frame.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -95,7 +99,7 @@ impl Frame {
 pub enum ArtState {
     /// No art piece is being shown.
     Idle,
-    /// A piece is being typed into existence.
+    /// A piece is being typed into existence, one glyph per step.
     Typing,
     /// A piece is fully drawn.
     Holding,
@@ -116,7 +120,7 @@ struct Column {
     chars: Vec<char>,
     /// Intended trail length.
     len: usize,
-    /// Brightness-band offset (−1, 0 or +1) for colour drift.
+    /// Brightness-band offset (-1, 0 or +1) for colour drift.
     drift: i8,
     /// Whether this column is currently raining.
     active: bool,
@@ -126,13 +130,7 @@ impl Column {
     /// Spawn a column. `from_top` places it just above the top edge (a fresh
     /// column re-entering the screen); otherwise it is distributed anywhere on
     /// screen so the first frame is already full.
-    fn spawn(
-        rng: &mut Rng,
-        height: usize,
-        config: &Config,
-        glyphs: GlyphSet,
-        from_top: bool,
-    ) -> Self {
+    fn spawn(rng: &mut Rng, height: usize, config: &Config, glyphs: GlyphSet, from_top: bool) -> Self {
         let max_trail = config.trail.max(MIN_TRAIL);
         let span = max_trail.saturating_sub(MIN_TRAIL) + 1;
         let len = MIN_TRAIL + rng.below(span);
@@ -167,19 +165,22 @@ pub struct Engine {
     rng: Rng,
     config: Config,
     glyphs: GlyphSet,
-    pack: ArtPack,
+    art: ArtLibrary,
     art_state: ArtState,
     art_index: usize,
+    art_is_phrase: bool,
     art_revealed: usize,
     art_timer: u32,
     art_x: usize,
     art_y: usize,
+    /// Recently shown (phrase-flag, index) pairs, to avoid repeating.
+    recent: VecDeque<(bool, usize)>,
     tick: u64,
 }
 
 impl Engine {
     /// Create an engine for a `width` × `height` grid.
-    pub fn new(width: usize, height: usize, config: Config, pack: ArtPack, seed: u64) -> Self {
+    pub fn new(width: usize, height: usize, config: Config, art: ArtLibrary, seed: u64) -> Self {
         let config = config.sanitized();
         let glyphs = GlyphSet::by_name(&config.glyph_set).unwrap_or_else(GlyphSet::default_set);
         let mut rng = Rng::new(seed);
@@ -193,13 +194,15 @@ impl Engine {
             rng,
             config,
             glyphs,
-            pack,
+            art,
             art_state: ArtState::Idle,
             art_index: 0,
+            art_is_phrase: false,
             art_revealed: 0,
             art_timer: 0,
             art_x: 0,
             art_y: 0,
+            recent: VecDeque::new(),
             tick: 0,
         };
         engine.reposition_art();
@@ -231,9 +234,9 @@ impl Engine {
         self.glyphs
     }
 
-    /// The art pack.
-    pub fn pack(&self) -> &ArtPack {
-        &self.pack
+    /// The art library.
+    pub fn library(&self) -> &ArtLibrary {
+        &self.art
     }
 
     /// Current art lifecycle phase.
@@ -243,11 +246,7 @@ impl Engine {
 
     /// The piece currently being shown, if any.
     pub fn current_piece(&self) -> Option<&ArtPiece> {
-        if self.art_state == ArtState::Idle {
-            None
-        } else {
-            self.pack.piece(self.art_index)
-        }
+        self.active_piece()
     }
 
     /// Resize the grid, preserving settings.
@@ -285,31 +284,71 @@ impl Engine {
     }
 
     fn start_art(&mut self) {
-        let count = self.pack.len();
+        // A text phrase occasionally, when the owner has them enabled.
+        let use_phrase = self.config.show_phrases
+            && !self.art.phrases.is_empty()
+            && (self.art.pictures.is_empty() || self.rng.below(PHRASE_ODDS) == 0);
+        let count = if use_phrase {
+            self.art.phrases.len()
+        } else {
+            self.art.pictures.len()
+        };
         if count == 0 {
             return;
         }
-        self.art_index = match self.config.art_mode.as_str() {
-            "random" => self.rng.below(count),
-            "single" => self
-                .pack
-                .index_of(&self.config.art_piece)
-                .unwrap_or((self.art_index + 1) % count),
-            _ => (self.art_index + 1) % count,
-        };
+        let index = self.pick_index(use_phrase, count);
+        self.art_index = index;
+        self.art_is_phrase = use_phrase;
+        self.recent.push_back((use_phrase, index));
+        while self.recent.len() > RECENT_KEEP {
+            self.recent.pop_front();
+        }
         self.art_revealed = 0;
         self.art_state = ArtState::Typing;
         self.reposition_art();
     }
 
-    fn reposition_art(&mut self) {
-        if let Some(piece) = self.pack.piece(self.art_index) {
-            self.art_x = self.width.saturating_sub(piece.width()) / 2;
-            self.art_y = self.height.saturating_sub(piece.height()) / 2;
-        } else {
-            self.art_x = 0;
-            self.art_y = 0;
+    /// Pick an index that avoids recently shown pieces, unless none qualify.
+    fn pick_index(&mut self, is_phrase: bool, count: usize) -> usize {
+        match self.config.art_mode.as_str() {
+            "random" => {
+                let candidates: Vec<usize> = (0..count)
+                    .filter(|index| {
+                        !self
+                            .recent
+                            .iter()
+                            .any(|(phrase, shown)| *phrase == is_phrase && *shown == *index)
+                    })
+                    .collect();
+                if candidates.is_empty() {
+                    self.rng.below(count)
+                } else {
+                    candidates[self.rng.below(candidates.len())]
+                }
+            }
+            "single" => self
+                .art
+                .named(&self.config.art_piece, is_phrase)
+                .unwrap_or((self.art_index + 1) % count),
+            _ => (self.art_index + 1) % count,
         }
+    }
+
+    fn active_piece(&self) -> Option<&ArtPiece> {
+        if self.art_state == ArtState::Idle {
+            return None;
+        }
+        if self.art_is_phrase {
+            self.art.phrases.piece(self.art_index)
+        } else {
+            self.art.pictures.piece(self.art_index)
+        }
+    }
+
+    fn reposition_art(&mut self) {
+        let (w, h) = self.active_piece().map_or((0, 0), |piece| (piece.width(), piece.height()));
+        self.art_x = self.width.saturating_sub(w) / 2;
+        self.art_y = self.height.saturating_sub(h) / 2;
     }
 
     /// Advance the simulation by one step.
@@ -360,7 +399,7 @@ impl Engine {
             ArtState::Idle => {
                 let interval = self.config.art_interval;
                 if self.config.show_art
-                    && !self.pack.is_empty()
+                    && !self.art.is_empty()
                     && interval > 0
                     && self.tick % u64::from(interval) == 0
                 {
@@ -368,11 +407,10 @@ impl Engine {
                 }
             }
             ArtState::Typing => {
-                let total = self
-                    .pack
-                    .piece(self.art_index)
-                    .map_or(0, ArtPiece::ink_count);
-                self.art_revealed += REVEAL_PER_STEP;
+                // One glyph per step: a walking typewriter head leaves
+                // permanent ink as it travels.
+                let total = self.active_piece().map_or(0, ArtPiece::ink_count);
+                self.art_revealed += 1;
                 if self.art_revealed >= total {
                     self.art_revealed = total;
                     self.art_state = ArtState::Holding;
@@ -410,7 +448,7 @@ impl Engine {
                 if row < 0 || row >= self.height as i64 {
                     continue;
                 }
-                let base: u8 = if distance == 0 {
+                let base = if distance == 0 {
                     3
                 } else if distance * 3 < count {
                     2
@@ -426,21 +464,41 @@ impl Engine {
     }
 
     fn overlay_art(&self, frame: &mut Frame) {
-        let Some(piece) = self.pack.piece(self.art_index) else {
+        let Some(piece) = self.active_piece() else {
             return;
         };
         let total = piece.ink_count();
-        let (limit, intensity) = match self.art_state {
+
+        // Suppress the rain behind the piece so the art is the hero.
+        let x0 = self.art_x.saturating_sub(1);
+        let y0 = self.art_y.saturating_sub(1);
+        let extra = usize::from(self.config.show_titles);
+        let box_w = (piece.width() + 2).min(frame.width().saturating_sub(x0));
+        let box_h = (piece.height() + 2 + extra).min(frame.height().saturating_sub(y0));
+        for y in y0..y0 + box_h {
+            for x in x0..x0 + box_w {
+                frame.set(x, y, Cell::EMPTY);
+            }
+        }
+
+        let (limit, head) = match self.art_state {
             ArtState::Idle => return,
-            ArtState::Typing => (self.art_revealed.min(total), 3),
-            ArtState::Holding => (total, 3),
+            ArtState::Typing => (self.art_revealed.min(total), true),
+            ArtState::Holding => (total, false),
             ArtState::Dissolving => {
                 let remaining = total * self.art_timer as usize / DISSOLVE_STEPS.max(1) as usize;
-                (remaining.min(total), 2)
+                (remaining.min(total), false)
             }
         };
         for index in 0..limit {
             if let Some((px, py, ch)) = piece.ink_at(index) {
+                // The newest glyph is the walking head; settled ink keeps the
+                // tone its own character carries.
+                let intensity = if head && index + 1 == limit {
+                    3
+                } else {
+                    tone(ch)
+                };
                 frame.set(self.art_x + px, self.art_y + py, Cell { ch, intensity });
             }
         }
@@ -467,10 +525,11 @@ impl Engine {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::collections::HashSet;
 
     #[test]
     fn resize_changes_the_frame_dimensions() {
-        let mut engine = Engine::new(20, 8, Config::default(), ArtPack::empty(), 1);
+        let mut engine = Engine::new(20, 8, Config::default(), ArtLibrary::empty(), 1);
         engine.resize(30, 10);
         let frame = engine.frame();
         assert_eq!(frame.width(), 30);
@@ -479,11 +538,9 @@ mod tests {
 
     #[test]
     fn set_config_re_resolves_glyphs_and_keeps_unknown_as_is() {
-        let mut engine = Engine::new(20, 8, Config::default(), ArtPack::empty(), 2);
-        let mut config = Config {
-            glyph_set: "letters".to_string(),
-            ..Config::default()
-        };
+        let mut engine = Engine::new(20, 8, Config::default(), ArtLibrary::empty(), 2);
+        let mut config = Config::default();
+        config.glyph_set = "letters".to_string();
         engine.set_config(config.clone());
         assert_eq!(engine.glyphs().name(), "letters");
         // An unknown name must not change the active set.
@@ -493,8 +550,8 @@ mod tests {
     }
 
     #[test]
-    fn summon_with_an_empty_pack_is_a_no_op() {
-        let mut engine = Engine::new(20, 8, Config::default(), ArtPack::empty(), 3);
+    fn summon_with_an_empty_library_is_a_no_op() {
+        let mut engine = Engine::new(20, 8, Config::default(), ArtLibrary::empty(), 3);
         engine.summon();
         assert_eq!(engine.art_state(), ArtState::Idle);
         assert!(engine.current_piece().is_none());
@@ -506,7 +563,7 @@ mod tests {
             density: 1.0,
             ..Config::default()
         };
-        let mut engine = Engine::new(5, 40, config, ArtPack::empty(), 4);
+        let mut engine = Engine::new(5, 40, config, ArtLibrary::empty(), 4);
         for _ in 0..5 {
             engine.step();
         }
@@ -521,5 +578,130 @@ mod tests {
             }
         }
         assert!(has_head, "a raining column should have a bright head");
+    }
+
+    #[test]
+    fn drift_shifts_rendered_frames() {
+        let mut config = Config::default();
+        config.color_drift = true;
+        let mut engine = Engine::new(60, 18, config, ArtLibrary::empty(), 321);
+        for _ in 0..120 {
+            engine.step();
+        }
+        let frames: Vec<Frame> = (0..8)
+            .map(|_| {
+                engine.step();
+                engine.frame()
+            })
+            .collect();
+        assert_ne!(frames[0], frames[7], "drift should vary the rendered frame");
+    }
+
+    #[test]
+    fn art_piece_is_typed_completed_and_released() {
+        let mut config = Config::default();
+        // Control the art manually rather than on a timer.
+        config.show_art = false;
+        let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 5);
+
+        engine.summon();
+        assert_eq!(engine.art_state(), ArtState::Typing);
+
+        let mut steps = 0;
+        while engine.art_state() != ArtState::Holding && steps < 2_000 {
+            engine.step();
+            steps += 1;
+        }
+        assert_eq!(engine.art_state(), ArtState::Holding);
+
+        let ink = engine
+            .current_piece()
+            .expect("a piece is on screen")
+            .ink_count();
+        assert!(ink > 0);
+        // A fully drawn piece contributes bright cells on top of the rain heads.
+        assert!(count_intensity(&engine, 3) >= ink);
+
+        while engine.art_state() != ArtState::Idle && steps < 8_000 {
+            engine.step();
+            steps += 1;
+        }
+        assert_eq!(engine.art_state(), ArtState::Idle);
+    }
+
+    #[test]
+    fn phrases_are_summonable_and_typed() {
+        let mut config = Config {
+            show_art: false,
+            ..Config::default()
+        };
+        config.art_mode = "single".to_string();
+        config.art_piece = "phrase one".to_string();
+        let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 6);
+        engine.summon();
+        assert!(engine.art_is_phrase, "summoned piece should be a phrase");
+        let mut steps = 0;
+        while engine.art_state() != ArtState::Idle && steps < 8_000 {
+            engine.step();
+            steps += 1;
+        }
+        assert_eq!(engine.art_state(), ArtState::Idle);
+    }
+
+    #[test]
+    fn recent_pieces_are_avoided_on_random_mode() {
+        let mut config = Config::default();
+        config.art_mode = "random".to_string();
+        let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 7);
+        let mut seen = HashSet::new();
+        for _ in 0..40 {
+            engine.summon();
+            if let Some(piece) = engine.current_piece() {
+                seen.insert(piece.name().to_string());
+            }
+            for _ in 0..120 {
+                engine.step();
+            }
+        }
+        assert!(seen.len() > 1, "random mode should cycle through pieces");
+    }
+
+    #[test]
+    fn rain_is_cleared_behind_active_art() {
+        let mut config = Config {
+            density: 1.0,
+            ..Config::default()
+        };
+        config.art_interval = 40;
+        config.show_art = true;
+        let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 8);
+        // Run until art is holding so there is a piece on screen.
+        while engine.art_state() != ArtState::Holding {
+            engine.step();
+        }
+        let frame = engine.frame();
+        let piece = engine.current_piece().expect("piece");
+        let mut rain_heads = 0usize;
+        for y in 0..piece.height() {
+            for x in 0..piece.width() {
+                if piece.glyph(x, y) == ' ' && frame.cell(x, y).intensity == 3 {
+                    rain_heads += 1;
+                }
+            }
+        }
+        assert_eq!(rain_heads, 0, "rain heads are suppressed behind the piece");
+    }
+
+    fn count_intensity(engine: &Engine, intensity: u8) -> usize {
+        let frame = engine.frame();
+        let mut total = 0;
+        for y in 0..frame.height() {
+            for x in 0..frame.width() {
+                if frame.cell(x, y).intensity == intensity {
+                    total += 1;
+                }
+            }
+        }
+        total
     }
 }

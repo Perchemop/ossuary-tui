@@ -9,7 +9,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifier
 use crossterm::style::{Color, Print, ResetColor, SetForegroundColor};
 use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::{execute, queue};
-use ossuary_core::{ArtPack, Config, Engine, VERSION, default_config_path, log_dir, user_art_dir};
+use ossuary_core::{ArtLibrary, Config, Engine, VERSION, default_config_path, log_dir, user_art_dir};
 
 use crate::palette::color_for;
 
@@ -46,16 +46,16 @@ impl App {
             .as_deref()
             .map(Config::load_or_default)
             .unwrap_or_default();
-        let pack = user_art_dir()
-            .map(|dir| ArtPack::built_in_with_user_art(&dir))
-            .unwrap_or_else(ArtPack::built_in);
+        let library = user_art_dir()
+            .map(|dir| ArtLibrary::built_in_with_user_art(&dir))
+            .unwrap_or_else(ArtLibrary::built_in);
 
         let (cols, rows) = terminal::size().unwrap_or((100, 30));
         let width = (cols as usize).max(20);
         // The bottom row is reserved for the status line and the version.
         let height = (rows as usize).max(6).saturating_sub(1);
 
-        let engine = Engine::new(width, height, loaded, pack, seed);
+        let engine = Engine::new(width, height, loaded, library, seed);
         let config = engine.config().clone();
         Self {
             engine,

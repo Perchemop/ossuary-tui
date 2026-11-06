@@ -7,9 +7,9 @@
 //! exercised by `cargo test` in CI with no screen attached (guide §K.3, §K.13).
 //!
 //! ```
-//! use ossuary_core::{ArtPack, Config, Engine};
+//! use ossuary_core::{ArtLibrary, Config, Engine};
 //!
-//! let mut engine = Engine::new(40, 12, Config::default(), ArtPack::built_in(), 42);
+//! let mut engine = Engine::new(40, 12, Config::default(), ArtLibrary::built_in(), 42);
 //! for _ in 0..10 {
 //!     engine.step();
 //! }
@@ -24,7 +24,7 @@ mod glyphs;
 mod rng;
 mod svg;
 
-pub use art::{ArtPack, ArtPiece};
+pub use art::{ArtLibrary, ArtPack, ArtPiece, tone};
 pub use config::Config;
 pub use engine::{ArtState, Cell, Engine, Frame};
 pub use error::CoreError;

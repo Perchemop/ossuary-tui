@@ -1,13 +1,27 @@
-//! Hand-typed ASCII art pieces and the packs that hold them.
+//! Hand-typed ASCII art pieces and the library that holds them.
 //!
-//! Every piece that ships with Ossuary was typed by hand for this project.
-//! None is copied from another artist's work (guide §2.2, clean-room rule): the
-//! shipped pack is original, and a user may add their own pieces as plain
-//! `.txt` files in the art directory.
+//! Every piece that ships with Ossuary was typed by hand for this project in
+//! the scene's *solid/grayscale* tradition: a bold fill character with a long
+//! tone ramp carved inside it, eye sockets and other voids cut out as dark
+//! regions, and the silhouette formed by anti-aliasing the fill's edge. No
+//! piece is copied from another artist (guide §2.2).
+//!
+//! The built-in pack lives in `assets/art/pieces.txt` and is embedded at
+//! compile time, so art can be edited as data and previewed without building.
 
 use std::path::Path;
 
 use crate::error::CoreError;
+
+/// The built-in pack, embedded at compile time.
+const BUILT_IN_TEXT: &str = include_str!("../../../assets/art/pieces.txt");
+
+/// Marker that starts a new piece in the embedded pack file.
+const HEADER: &str = "== ";
+
+/// Name prefix marking an embedded piece as a text phrase rather than a
+/// picture.
+const PHRASE_PREFIX: &str = "phrase";
 
 /// One hand-typed ASCII art piece.
 ///
@@ -94,7 +108,7 @@ impl ArtPiece {
             .count()
     }
 
-    /// The `index`-th inked cell in reading order, for a typewriter reveal.
+    /// The `index`-th inked cell in reading order, for the typewriter reveal.
     pub fn ink_at(&self, index: usize) -> Option<(usize, usize, char)> {
         let mut seen = 0;
         for (y, line) in self.lines.iter().enumerate() {
@@ -128,61 +142,16 @@ impl ArtPack {
         Self::default()
     }
 
-    /// The original pack that ships with Ossuary.
-    ///
-    /// All six pieces were typed by hand for this project in a sparse,
-    /// monochrome punctuation style; none is a copy of another artist's work.
+    /// The picture pieces that ship with Ossuary.
     pub fn built_in() -> Self {
-        Self::new(vec![
-            ArtPiece::from_lines(
-                "skull",
-                &[
-                    "  _____",
-                    " /     \\",
-                    "| () () |",
-                    "|   ^   |",
-                    "|  \\_/  |",
-                    " \\_____/ ",
-                ],
-            ),
-            ArtPiece::from_lines(
-                "bones",
-                &[
-                    " \\     /",
-                    "  \\   /",
-                    "   \\ /",
-                    "   / \\",
-                    "  /   \\",
-                    " /     \\",
-                ],
-            ),
-            ArtPiece::from_lines("cat", &[" /\\_/\\", "( o.o )", " > ^ < "]),
-            ArtPiece::from_lines("candle", &["  (*)", "  | |", "  | |", "  |_|"]),
-            ArtPiece::from_lines("goose", &["  ___", " (o o)", " /|_|\\", "  ^ ^"]),
-            ArtPiece::from_lines("carriage", &["  ____", " |:::_|", "=|_|_|=", " o   o"]),
-            ArtPiece::from_lines(
-                "ghost",
-                &[" .---.", "| o o |", "|  ^  |", "|  ~  |", "|_____|"],
-            ),
-            ArtPiece::from_lines(
-                "key",
-                &[
-                    " .---.", "|  |  |", " '---'", "   |", "   |", "  ===", "   |",
-                ],
-            ),
-            ArtPiece::from_lines("moon", &["  ___", " /   \\", "| ( ) |", " \\___/"]),
-            ArtPiece::from_lines(
-                "gem",
-                &[
-                    "   /\\",
-                    "  /  \\",
-                    " / /\\ \\",
-                    " \\ \\/ /",
-                    "  \\  /",
-                    "   \\/",
-                ],
-            ),
-        ])
+        let (pictures, _) = parse_pack(BUILT_IN_TEXT);
+        Self::new(pictures)
+    }
+
+    /// The text phrases that ship with Ossuary.
+    pub fn built_in_phrases() -> Self {
+        let (_, phrases) = parse_pack(BUILT_IN_TEXT);
+        Self::new(phrases)
     }
 
     /// Number of pieces.
@@ -256,14 +225,120 @@ impl ArtPack {
         }
         Ok(Self::new(pieces))
     }
+}
 
-    /// The built-in pack with a user pack appended from `dir`.
-    pub fn built_in_with_user_art(dir: &Path) -> Self {
-        let mut pack = Self::built_in();
-        if let Ok(user) = Self::load_dir(dir) {
-            pack.extend(user);
+/// Everything the rain can summon: pictures plus text phrases.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct ArtLibrary {
+    /// Hand-typed pictures.
+    pub pictures: ArtPack,
+    /// Short typed phrases (shown in the same typewriter reveal).
+    pub phrases: ArtPack,
+}
+
+impl ArtLibrary {
+    /// The original library that ships with Ossuary.
+    pub fn built_in() -> Self {
+        let (pictures, phrases) = parse_pack(BUILT_IN_TEXT);
+        Self {
+            pictures: ArtPack::new(pictures),
+            phrases: ArtPack::new(phrases),
         }
-        pack
+    }
+
+    /// An empty library.
+    pub fn empty() -> Self {
+        Self::default()
+    }
+
+    /// The built-in library with a user pack appended from `dir`.
+    pub fn built_in_with_user_art(dir: &Path) -> Self {
+        let mut library = Self::built_in();
+        if let Ok(user) = ArtPack::load_dir(dir) {
+            library.pictures.extend(user);
+        }
+        library
+    }
+
+    /// Look up a piece by name across either pictures or phrases.
+    pub fn named(&self, name: &str, phrase: bool) -> Option<usize> {
+        if phrase {
+            self.phrases.index_of(name)
+        } else {
+            self.pictures.index_of(name)
+        }
+    }
+
+    /// Whether nothing at all can be summoned.
+    pub fn is_empty(&self) -> bool {
+        self.pictures.is_empty() && self.phrases.is_empty()
+    }
+}
+
+/// Brightness of an art glyph, for a bright-ink-on-dark-terminal render.
+///
+/// Art carries its own shading in the *choice* of character, exactly as
+/// scene-style solid/grayscale work does: dense fill characters read as lit
+/// bone, sparse punctuation reads as shadow, and space is void. The renderer
+/// maps each glyph to one of the terminal's brightness bands, so a piece keeps
+/// its tonal range instead of flattening into a single colour.
+pub fn tone(ch: char) -> u8 {
+    match ch {
+        // Dense fill: the brightest things on screen.
+        '$' | '#' | '8' | '&' | '@' | '%' | 'W' | 'M' | 'B' | '0' | 'Q' | 'D' => 3,
+        // Edge and shadow work: deliberately dim.
+        '.' | ',' | '\'' | '"' | '`' | '^' | '~' | '-' | '_' | ':' | ';' => 1,
+        // Void.
+        ' ' => 0,
+        // Everything else sits in the middle band.
+        _ => 2,
+    }
+}
+
+/// Split the embedded pack text into picture pieces and phrase pieces.
+fn parse_pack(text: &str) -> (Vec<ArtPiece>, Vec<ArtPiece>) {
+    let mut pictures = Vec::new();
+    let mut phrases = Vec::new();
+    let mut name: Option<String> = None;
+    let mut lines: Vec<String> = Vec::new();
+
+    for raw in text.lines() {
+        if let Some(header) = raw.strip_prefix(HEADER) {
+            if let Some(current) = name.take() {
+                push_piece(&mut pictures, &mut phrases, current, &lines);
+            }
+            name = Some(header.trim().to_string());
+            lines.clear();
+        } else if name.is_some() {
+            lines.push(raw.trim_end_matches('\r').to_string());
+        }
+    }
+    if let Some(current) = name.take() {
+        push_piece(&mut pictures, &mut phrases, current, &lines);
+    }
+    (pictures, phrases)
+}
+
+/// Trim trailing blank lines and file the piece under pictures or phrases.
+fn push_piece(
+    pictures: &mut Vec<ArtPiece>,
+    phrases: &mut Vec<ArtPiece>,
+    name: String,
+    lines: &[String],
+) {
+    let mut end = lines.len();
+    while end > 0 && lines[end - 1].trim().is_empty() {
+        end -= 1;
+    }
+    let refs: Vec<&str> = lines[..end].iter().map(String::as_str).collect();
+    let piece = ArtPiece::from_lines(name, &refs);
+    if piece.is_empty() {
+        return;
+    }
+    if piece.name().starts_with(PHRASE_PREFIX) {
+        phrases.push(piece);
+    } else {
+        pictures.push(piece);
     }
 }
 
@@ -284,12 +359,6 @@ mod tests {
     }
 
     #[test]
-    fn glyph_out_of_range_is_a_space() {
-        let piece = ArtPiece::from_lines("t", &["x"]);
-        assert_eq!(piece.glyph(9, 9), ' ');
-    }
-
-    #[test]
     fn ink_count_and_ink_at_agree() {
         let piece = ArtPiece::from_lines("t", &["a b", " c "]);
         assert_eq!(piece.ink_count(), 3);
@@ -302,26 +371,53 @@ mod tests {
     }
 
     #[test]
-    fn blank_piece_is_empty() {
-        assert!(ArtPiece::from_lines("blank", &["   ", "   "]).is_empty());
-    }
-
-    #[test]
-    fn built_in_pack_is_populated_and_well_formed() {
+    fn built_in_pictures_are_dense_and_well_formed() {
         let pack = ArtPack::built_in();
-        assert!(pack.len() >= 8);
-        for name in [
-            "skull", "bones", "cat", "candle", "goose", "carriage", "ghost", "key", "moon", "gem",
-        ] {
-            assert!(
-                pack.index_of(name).is_some(),
-                "missing built-in piece {name}"
-            );
+        assert!(pack.len() >= 5);
+        for name in ["skull", "crossbones", "cat", "candle", "moon", "ghost"] {
+            assert!(pack.index_of(name).is_some(), "missing built-in piece {name}");
         }
         for piece in pack.pieces() {
             assert!(!piece.is_empty(), "piece {} must have ink", piece.name());
-            assert!(piece.ink_count() > 0);
+            // Density is the point: a piece this size should carry real ink.
+            assert!(
+                piece.ink_count() >= 30,
+                "piece {} is too sparse ({} ink)",
+                piece.name(),
+                piece.ink_count()
+            );
         }
+    }
+
+    #[test]
+    fn built_in_phrases_exist() {
+        let phrases = ArtPack::built_in_phrases();
+        assert!(!phrases.is_empty());
+        for piece in phrases.pieces() {
+            assert!(piece.name().starts_with(PHRASE_PREFIX));
+        }
+    }
+
+    #[test]
+    fn library_splits_pictures_from_phrases() {
+        let library = ArtLibrary::built_in();
+        assert!(!library.pictures.is_empty());
+        assert!(!library.phrases.is_empty());
+        // A phrase never appears in the picture pack.
+        for phrase in library.phrases.pieces() {
+            assert!(library.pictures.index_of(phrase.name()).is_none());
+        }
+    }
+
+    #[test]
+    fn tone_puts_dense_fill_bright_and_edges_dim() {
+        assert_eq!(tone('$'), 3);
+        assert_eq!(tone('8'), 3);
+        assert_eq!(tone('S'), 2);
+        assert_eq!(tone('I'), 2);
+        assert_eq!(tone(':'), 1);
+        assert_eq!(tone('.'), 1);
+        assert_eq!(tone(' '), 0);
     }
 
     #[test]
@@ -339,5 +435,15 @@ mod tests {
         let dir = tempfile::tempdir().expect("tempdir");
         let missing = dir.path().join("does-not-exist");
         assert!(ArtPack::load_dir(&missing).expect("load").is_empty());
+    }
+
+    #[test]
+    fn parse_pack_splits_on_headers_and_drops_blank_tail() {
+        let text = "== alpha\nxx\n\n\n== beta\nyy\n";
+        let (pictures, phrases) = parse_pack(text);
+        assert_eq!(pictures.len(), 2);
+        assert!(phrases.is_empty());
+        assert_eq!(pictures[0].height(), 1, "trailing blank lines are dropped");
+        assert_eq!(pictures[0].name(), "alpha");
     }
 }

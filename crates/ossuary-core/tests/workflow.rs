@@ -4,7 +4,7 @@
 //! simulation, determinism, the art-piece lifecycle and user art packs — with
 //! no terminal, no display and no network.
 
-use ossuary_core::{ArtPack, ArtState, Cell, Config, Engine};
+use ossuary_core::{ArtLibrary, ArtPack, ArtState, Cell, Config, Engine};
 
 /// Count the cells whose brightness band equals `intensity`.
 fn count_intensity(engine: &Engine, intensity: u8) -> usize {
@@ -44,7 +44,7 @@ fn workflow_theme_save_load_roundtrip() {
 
 #[test]
 fn workflow_rain_lights_cells_from_the_active_glyph_set() {
-    let mut engine = Engine::new(40, 14, Config::default(), ArtPack::empty(), 7);
+    let mut engine = Engine::new(40, 14, Config::default(), ArtLibrary::empty(), 7);
     for _ in 0..40 {
         engine.step();
     }
@@ -73,9 +73,9 @@ fn workflow_rain_lights_cells_from_the_active_glyph_set() {
 #[test]
 fn workflow_same_seed_is_deterministic_and_different_seeds_diverge() {
     let config = Config::default();
-    let mut a = Engine::new(60, 18, config.clone(), ArtPack::empty(), 12345);
-    let mut b = Engine::new(60, 18, config.clone(), ArtPack::empty(), 12345);
-    let mut other = Engine::new(60, 18, config, ArtPack::empty(), 999);
+    let mut a = Engine::new(60, 18, config.clone(), ArtLibrary::empty(), 12345);
+    let mut b = Engine::new(60, 18, config.clone(), ArtLibrary::empty(), 12345);
+    let mut other = Engine::new(60, 18, config, ArtLibrary::empty(), 999);
 
     for _ in 0..120 {
         a.step();
@@ -100,7 +100,7 @@ fn workflow_art_piece_is_typed_completed_and_released() {
         show_art: false,
         ..Config::default()
     };
-    let mut engine = Engine::new(40, 14, config, ArtPack::built_in(), 5);
+    let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 5);
 
     engine.summon();
     assert_eq!(engine.art_state(), ArtState::Typing);
@@ -137,10 +137,10 @@ fn workflow_user_art_pack_extends_the_built_in_pack() {
     assert_eq!(user.len(), 1);
     assert_eq!(user.piece(0).expect("piece").name(), "arrow");
 
-    let combined = ArtPack::built_in_with_user_art(dir.path());
-    assert!(combined.len() > user.len());
-    assert!(combined.index_of("arrow").is_some());
-    assert!(combined.index_of("skull").is_some());
+    let combined = ArtLibrary::built_in_with_user_art(dir.path());
+    assert!(combined.pictures.len() > user.len());
+    assert!(combined.pictures.index_of("arrow").is_some());
+    assert!(combined.pictures.index_of("skull").is_some());
 
     // An empty frame is exactly that: all cells empty, correct size.
     let frame = ossuary_core::Frame::new(4, 3);
@@ -151,8 +151,9 @@ fn workflow_user_art_pack_extends_the_built_in_pack() {
 
 #[test]
 fn workflow_art_rotation_modes() {
-    let pack = ArtPack::built_in();
+    let pack = ArtLibrary::built_in();
     let names: Vec<String> = pack
+        .pictures
         .pieces()
         .iter()
         .map(|piece| piece.name().to_string())
@@ -180,7 +181,7 @@ fn workflow_art_rotation_modes() {
         art_piece: "moon".to_string(),
         ..Config::default()
     };
-    let mut engine = Engine::new(40, 14, single, ArtPack::built_in(), 6);
+    let mut engine = Engine::new(40, 14, single, ArtLibrary::built_in(), 6);
     for _ in 0..3 {
         engine.summon();
         assert_eq!(engine.current_piece().expect("piece").name(), "moon");
@@ -194,8 +195,8 @@ fn workflow_colour_drift_varies_the_ramp() {
         color_drift: true,
         ..Config::default()
     };
-    let mut a = Engine::new(60, 18, plain, ArtPack::empty(), 321);
-    let mut b = Engine::new(60, 18, drifted, ArtPack::empty(), 321);
+    let mut a = Engine::new(60, 18, plain, ArtLibrary::empty(), 321);
+    let mut b = Engine::new(60, 18, drifted, ArtLibrary::empty(), 321);
     for _ in 0..60 {
         a.step();
         b.step();
@@ -216,7 +217,7 @@ fn workflow_art_title_is_drawn_under_the_piece() {
         art_piece: "moon".to_string(),
         ..Config::default()
     };
-    let mut engine = Engine::new(40, 16, config, ArtPack::built_in(), 9);
+    let mut engine = Engine::new(40, 16, config, ArtLibrary::built_in(), 9);
     engine.summon();
     let mut steps = 0;
     while engine.art_state() != ArtState::Holding && steps < 2_000 {
