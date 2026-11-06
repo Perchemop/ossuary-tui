@@ -541,7 +541,7 @@ mod tests {
     #[test]
     fn set_config_re_resolves_glyphs_and_keeps_unknown_as_is() {
         let mut engine = Engine::new(20, 8, Config::default(), ArtLibrary::empty(), 2);
-        let mut config = Config {
+        let config = Config {
             glyph_set: "letters".to_string(),
             ..Config::default()
         };
@@ -608,9 +608,11 @@ mod tests {
 
     #[test]
     fn art_piece_is_typed_completed_and_released() {
-        let mut config = Config::default();
+        let config = Config {
+            show_art: false,
+            ..Config::default()
+        };
         // Control the art manually rather than on a timer.
-        config.show_art = false;
         // Big enough frame for the largest built-in piece (crossbones: 29x19).
         let mut engine = Engine::new(80, 40, config, ArtLibrary::built_in(), 5);
 
@@ -674,8 +676,10 @@ mod tests {
 
     #[test]
     fn recent_pieces_are_avoided_on_random_mode() {
-        let mut config = Config::default();
-        config.art_mode = "random".to_string();
+        let config = Config {
+            art_mode: "random".to_string(),
+            ..Config::default()
+        };
         let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 7);
         let mut seen = HashSet::new();
         for _ in 0..40 {
