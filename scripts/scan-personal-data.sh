@@ -26,7 +26,7 @@ list_files() {
     if [ "$MODE" = path ]; then
         find "$SCAN_ROOT" -type f -print0
     else
-        git ls-files -z -- ':!scripts/scan-personal-data.sh' ':!scripts/scan-release-assets.sh'
+        git ls-files -z -- ':!scripts/scan-personal-data.sh'
     fi
 }
 

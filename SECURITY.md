@@ -14,27 +14,26 @@ ask not to be.
 
 ## Scope
 
-In scope: the Ossuary binary and the crates in this repository, the theme and
-user-art file handling, the optional update check and crash-capture paths, and
-the CI/release workflows.
+In scope: the Ossuary source and the crates in this repository, the theme and
+user-art file handling, the crash-capture path, and the CI workflow.
 
-Out of scope: the user's terminal and operating system, and any service the user
-connects to voluntarily.
+Out of scope: the user's terminal and operating system.
 
 ## Security properties of this project
 
-- **No embedded credentials.** The app ships no tokens or keys. The update check
-  reads only public release information from GitHub.
-- **No automatic submission.** Crash capture writes a **scrubbed** local log
-  (home paths and credential-looking strings are removed) and never sends
-  anything on its own.
-- **No network unless asked.** The only network call is the user-initiated
-  update check; it fails soft when offline.
+- **No network at all.** Ossuary makes no network requests. There is no update
+  check, no telemetry and no crash auto-submission. The crash helper only writes
+  a local log.
+- **No embedded credentials.** The app ships no tokens or keys.
+- **Scrubbed logs.** Crash logs have home paths and credential-looking strings
+  removed before they are written.
 - **Local-first data.** The theme file and user art are plain files on the
   user's own disk.
+- **Small supply chain.** A deliberately small dependency set; the crates are
+  audited by `cargo-deny` in CI.
 
 ## Scans in CI
 
-Every pull request runs a secret scan and a personal-data scan as blocking
-steps of the `check` workflow, and release assets are scanned before they are
-published.
+Every pull request runs a secret scan and a personal-data scan as blocking steps
+of the `check` workflow, alongside `cargo-deny` (licences, advisories, bans,
+sources).

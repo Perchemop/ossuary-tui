@@ -2,27 +2,21 @@
 //!
 //! Design rules, all enforced here:
 //!
-//! * **Never embed a privileged token.** This crate ships no credential. If an
-//!   app offers in-app submission at all, it uses a *user-supplied* token held
-//!   only in memory ([`submit`]).
-//! * **Consent first, never auto-send.** A report is only *captured* by the
-//!   panic hook; turning it into a network call takes explicit user action. The
-//!   default path is [`prefill_issue_url`], a pre-filled "New Issue" page the
-//!   user opens and submits themselves.
+//! * **No network, ever.** Ossuary is a self-contained terminal toy: this crate
+//!   captures a crash and writes a *local* log. It makes no network requests and
+//!   ships no credential. If a user wants to file an issue they can open the
+//!   pre-filled page built by [`prefill_issue_url`] in their own browser.
 //! * **Scrub before sharing.** Absolute home directories and anything that
 //!   looks like a token are redacted from every captured line ([`scrub`]).
 //!
-//! The crate is deliberately UI-free: an app renders the [`Report`] with its own
-//! toolkit and calls [`submit`] only after the user confirms.
+//! The crate is deliberately UI-free: an app installs the panic hook and, if it
+//! wants to, renders the [`Report`] with its own toolkit.
 
 use serde::{Deserialize, Serialize};
 use std::panic::PanicHookInfo;
 use std::path::Path;
 
-/// `User-Agent` sent when submitting an issue (the GitHub API requires one).
-pub const USER_AGENT: &str = "ossuary-crash-report";
-
-/// Labels requested on a crash issue.
+/// Labels suggested for a crash issue (used only to build a pre-filled URL).
 pub const ISSUE_LABELS: [&str; 3] = ["crash", "bug", "user-report"];
 
 /// Maximum characters retained for the summary line.
@@ -391,43 +385,6 @@ pub fn prefill_issue_url(repo: &str, report: &Report) -> String {
     )
 }
 
-/// Submit a report as a GitHub issue using a **user-supplied** token.
-///
-/// Passing `None` or a blank token returns an error rather than making any
-/// network call: this crate never posts a report the user has not reviewed and
-/// confirmed. The token is used once and never stored.
-pub fn submit(repo: &str, report: &Report, token: Option<&str>) -> Result<(), String> {
-    let Some(token) = token
-        .filter(|value| !value.trim().is_empty())
-        .map(str::trim)
-    else {
-        return Err("no user token supplied; open the pre-filled issue URL instead".to_string());
-    };
-    let url = format!(
-        "https://api.github.com/repos/{}/issues",
-        repo.trim_end_matches('/')
-    );
-    let payload = serde_json::json!({
-        "title": report.title(),
-        "body": report.body(),
-        "labels": ISSUE_LABELS,
-    });
-    let response = ureq::post(&url)
-        .header("Authorization", format!("Bearer {token}"))
-        .header("User-Agent", USER_AGENT)
-        .header("Accept", "application/vnd.github+json")
-        .send_json(payload)
-        .map_err(|error| format!("network error: {error}"))?;
-    match response.status().as_u16() {
-        200..=299 => Ok(()),
-        401 => Err("GitHub rejected the token (401). Check it and retry.".to_string()),
-        403 => Err(
-            "GitHub refused issue creation (403). The token may lack the `repo` scope.".to_string(),
-        ),
-        status => Err(format!("GitHub returned {status}")),
-    }
-}
-
 /// Percent-encode a string for use in a query parameter.
 fn urlencode(input: &str) -> String {
     let mut out = String::with_capacity(input.len());
@@ -555,14 +512,4 @@ mod tests {
         assert!(!url.contains(' '));
     }
 
-    #[test]
-    fn submit_without_token_refuses_to_send() {
-        let error = submit("Perchemop/ossuary-tui", &sample(), None).expect_err("expected error");
-        assert!(error.contains("no user token"));
-    }
-
-    #[test]
-    fn submit_with_blank_token_refuses_too() {
-        assert!(submit("Perchemop/ossuary-tui", &sample(), Some("   ")).is_err());
-    }
 }

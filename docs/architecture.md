@@ -6,15 +6,17 @@ headless crate and the terminal is a thin shell.
 ```
 apps/ossuary/          → terminal shell: raw mode, event loop, painter (crossterm)
 crates/ossuary-core/   → simulation, glyph sets, art model, theme persistence
-crates/crash-report/   → shared suite crate: panic hook, scrubbed capture
-crates/update-check/   → shared suite crate: GitHub Releases, version compare
+crates/crash-report/   → shared suite crate: panic hook, scrubbed local capture
 ```
 
 ## Dependency direction
 
-`apps/ossuary` depends on `ossuary-core`, `crash-report` and `update-check`.
-`ossuary-core` depends on none of them: it has no terminal, no display and no
-network code, so every workflow is testable headlessly (guide §K.13).
+`apps/ossuary` depends on `ossuary-core` and `crash-report`. `ossuary-core`
+depends on neither: it has no terminal, no display and no network code, so every
+workflow is testable headlessly (guide §K.13).
+
+There is **no network dependency anywhere** in the tree: Ossuary is fully
+offline and publishes no binaries.
 
 ## Core (`ossuary-core`)
 
@@ -42,5 +44,5 @@ result. The shell decides how often to call them.
 Settings live in a JSON theme file under the per-user config directory
 (`~/.config/ossuary/theme.json` on Linux; `OSSUARY_CONFIG_DIR` overrides the
 location). User art pieces are `*.txt` files under the adjacent `art/`
-directory. Save/load is plain, atomic-enough `write`/`read` of a small file; a
-missing or broken theme falls back to defaults rather than failing startup.
+directory. A missing or broken theme falls back to defaults rather than failing
+startup.

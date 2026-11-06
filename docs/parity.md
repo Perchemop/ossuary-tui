@@ -15,8 +15,8 @@ from verified evidence (a named test or a CI run), never from intention.
 | CAP-008 | version constant `ossuary_core::VERSION`; painted in the corner (UI, verified by hand) | met |
 | CAP-009 | `RELEASE_NOTES`/`TOKEN_LEDGER` embedded via `include_str!`; overlay verified by hand | met |
 | CAP-010 | `crash-report` unit tests (scrubbing, payload) | met |
-| CAP-011 | `update-check` unit tests (version compare, pick_latest, cache) | met |
-| CAP-012 | release workflow builds all four targets | partial |
+| CAP-011 | not implemented by design — fully offline | out of scope |
+| CAP-012 | not published by design — source distribution only | out of scope |
 
 ## Exceeding the inspiration
 

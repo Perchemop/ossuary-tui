@@ -3,40 +3,48 @@
 **Ossuary** turns your terminal into a screen of falling characters that
 periodically assemble into hand-typed ASCII art — a skull, a set of bones, a
 cat, a little candle, a ghost — in crisp monochrome, with a soft glitchy
-flicker. Think of it as a matrix-style screensaver, but instead of endless
-katakana it types real pictures out of punctuation and then lets them dissolve
-back into the rain.
+flicker. Think of a matrix-style screensaver, but instead of endless katakana it
+types real pictures out of punctuation and then lets them dissolve back into the
+rain.
+
+It is a terminal program (a TUI): you run it *in* your terminal, not as a
+desktop window.
 
 ## Why you might like it
 
 - **Free and open source.** No cost, no account, no trial limits. The source is
   openly available under the MIT OR Apache-2.0 licence.
-- **Completely offline.** Ossuary never needs the internet. The only optional
-  network use is checking for a newer release, and only when you ask it to.
-- **Runs anywhere.** It is a small terminal program, so it works on Linux, macOS
-  and Windows, over SSH, and on a spare monitor.
+- **Completely offline.** Ossuary makes no network requests at all. There is no
+  telemetry and there is no update check.
+- **Small and native.** A single terminal binary with a tiny dependency
+  footprint. It runs anywhere a terminal runs, including over SSH.
 - **Your own art.** Drop simple text files into a folder and they join the rain.
 
 ## Get started
 
-1. **Download.** Open the [Releases](https://github.com/Perchemop/ossuary-tui/releases)
-   page and download the file for your computer (Linux, macOS or Windows). The
-   files are built automatically by GitHub Actions, so every release matches the
-   published source code.
-2. **Unzip.** Extract the archive to any folder you like.
-3. **Run.** Open a terminal in that folder and start Ossuary:
+Ossuary is a terminal application, so there is no installer and nothing to
+download — you run it from your terminal. Build it once with Rust:
 
-   - **Linux / macOS:** `./ossuary`
-   - **Windows:** `ossuary.exe`
+```sh
+# install straight from the repository (needs the Rust toolchain)
+cargo install --git https://github.com/Perchemop/ossuary-tui ossuary
 
-   (You do not need to install anything else.)
+# then, from any terminal, just:
+ossuary
+```
+
+Or, from a clone of the repository, run it without installing:
+
+```sh
+cargo run -p ossuary
+```
 
 Press `q` to quit, or `?` for the full list of keys.
 
 ## What you can do
 
-- **Watch the rain.** Colourful-to-monochrome columns of characters fall down
-  the screen with a bright head and a fading trail.
+- **Watch the rain.** Columns of characters fall down the screen with a bright
+  head and a fading trail.
 - **See the pictures.** Every so often the characters gather into a complete
   picture, hold it for a moment, then melt away. Press `n` to summon one now.
 - **Change the mood.** Swap the character set (`g`), speed it up or slow it down
@@ -59,15 +67,12 @@ Your own `.txt` art files go in the `art/` folder inside that directory.
 
 ## Your privacy
 
-- Everything happens on your computer. Ossuary works fully offline and nothing
-  you do is ever uploaded.
-- There is no account, no sign-in and no telemetry.
-- If you press `u`, Ossuary reads public release information from GitHub to
-  check for a newer version. If you are offline, it simply says so and keeps
-  working.
-- If Ossuary ever crashes, it writes a small, **scrubbed** log to its logs
-  folder. Home paths and anything resembling a secret are removed before the
-  log is written, and nothing is ever sent automatically.
+- Everything happens on your computer, and Ossuary never talks to the network —
+  there is no update check and no telemetry.
+- There is no account and no sign-in.
+- If Ossuary ever crashes, it writes a small, **scrubbed** log to its `logs`
+  folder. Home paths and anything resembling a secret are removed before the log
+  is written, and nothing is ever sent anywhere.
 
 ## Keys at a glance
 
@@ -82,8 +87,7 @@ Your own `.txt` art files go in the `art/` folder inside that directory.
 | `f` | cycle flicker |
 | `m` | monochrome / green |
 | `s` | save settings |
-| `u` | check for updates |
-| `V` | release notes |
+| `V` | changelog |
 | `?` | help |
 | `q` | quit |
 

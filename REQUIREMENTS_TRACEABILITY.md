@@ -14,7 +14,7 @@ that proves it "done" (guide §II.24.2).
 | R7 | User art packs | `ossuary-core/src/art.rs` | `workflow_user_art_pack_*` | DONE |
 | R8 | Terminal shell | `apps/ossuary/src/*.rs` | builds in CI; hand-tested | DONE |
 | R9 | Version + notes overlay | `apps/ossuary/src/app.rs` | `include_str!` of CHANGELOG/tokens | DONE |
-| R10 | Crash + update | `crates/crash-report`, `crates/update-check` | shared-crate unit tests | DONE |
+| R10 | Crash log (no network) | `crates/crash-report` | shared-crate unit tests | DONE |
 | R11 | Legal + docs baseline | `LICENSE*`, `ATTRIBUTION.md`, `README.md` | present in tree | DONE |
 | R12 | CI green + v0.1.0 | `.github/workflows/ci.yml` | CI run 42101993829 — success | DONE |
 | R13 | Lockfile + cargo-deny | `Cargo.lock`, `deny.toml` | `Cargo.lock` committed (from CI); `cargo-deny` configured but not a blocking gate yet | PARTIAL |

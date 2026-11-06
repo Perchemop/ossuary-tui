@@ -28,6 +28,17 @@ exactly what deterministic frame tests need (guide §M.5).
 repository (same shape as the other suite apps).
 **Why:** Consistency with the suite (guide §7); the guide §12.1 note about a
 submodule is not yet adopted here.
+**Superseded in part (2026-11-06, D-007):** `update-check` was later removed
+when Ossuary became fully offline and source-only.
+
+## 2026-11-06 — D-007: TUI-only, source-only distribution, no network
+
+**Decision:** Ossuary is distributed as **source only** — no published binaries
+and no desktop installers — and the application makes **no network requests**
+(the in-app update check and the crash auto-submission path were removed).
+**Why:** Owner directive, 2026-11-06: "I only want this app available as a tui,
+not desktop releases." This narrows `docs/scope.md` and overrides the guide's
+release-artefact default; it is recorded here rather than as a silent omission.
 
 ## 2026-11-06 — D-006: cargo-deny is a blocking gate
 
