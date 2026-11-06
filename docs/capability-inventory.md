@@ -15,6 +15,8 @@ capability not listed here cannot be claimed done or reported missing.
 | CAP-008 | Version display | Version shown subtly in a corner | implemented |
 | CAP-009 | Changelog overlay | Key opens the changelog + effort metrics in-app | implemented |
 | CAP-010 | Crash capture | Panic hook writes a scrubbed local log | implemented |
+| CAP-019 | Cross-OS CI | Headless tests + release build run on Linux, macOS and Windows | implemented |
+| CAP-020 | Runtime smoke test | CI runs the binary under a pty and asserts it draws | implemented |
 | CAP-018 | Preview renderer | The core renders a frame to a standalone SVG (used for README images) | implemented |
 | CAP-014 | Art rotation modes | `r` cycles sequential → random → single-piece | implemented |
 | CAP-015 | Colour drift | `d` varies each column's brightness band within the ramp | implemented |

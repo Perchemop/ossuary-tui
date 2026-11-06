@@ -48,6 +48,10 @@ jobs:
       - name: Build (release)
         run: cargo build --release
 
+      # Prove the app actually runs and draws, headlessly under a pty.
+      - name: Terminal smoke test (pseudo-terminal)
+        run: python3 scripts/pty-smoke.py target/release/ossuary
+
       # Regenerate the README preview images so they can be reviewed and
       # committed without a terminal (the renderer lives in the headless core).
       - name: Generate preview images
@@ -107,3 +111,24 @@ jobs:
           name: rustfmt-src
           path: /tmp/rustfmt-src.tgz
           if-no-files-found: warn
+
+  # Real cross-platform verification: the same headless tests run on Linux,
+  # macOS and Windows. Nothing is built for distribution — this only proves the
+  # code compiles and behaves on each OS (source-only distribution).
+  matrix:
+    name: matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          key: ${{ matrix.os }}
+      - name: Tests (headless, no display)
+        run: cargo test --workspace
+      - name: Build (release)
+        run: cargo build --release

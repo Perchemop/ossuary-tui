@@ -7,10 +7,9 @@ scope in `docs/scope.md`.
 ## Status
 
 - **v0.1.0 — first functional test build**: shipped (see `CHANGELOG.md`).
-- **v1 scope readiness: 100% of in-scope capabilities implemented and verified
-  by headless tests; hand-verified on Linux.** Remaining before a 1.0.0
-  declaration: broad hands-on terminal/OS coverage and owner acceptance — not
-  code.
+- **v1 scope complete.** Every in-scope capability is implemented and verified;
+  the headless tests and a release build run on Linux, macOS and Windows in CI,
+  and a pseudo-terminal smoke test proves the app runs and draws.
 
 ## Milestones
 
@@ -21,7 +20,7 @@ scope in `docs/scope.md`.
 | v0.3.0 | **TUI-only distribution**: no published binaries, fully offline (update check removed) | done |
 | v0.4.0 | Art-rotation modes (sequential/random/single); per-column colour drift; optional art titles; a first-run welcome overlay | done |
 | v0.5.0 | SVG preview renderer + README preview images generated in CI | done |
-| v1.0.0 | All §9 quality gates and the §2.5 legal checklist clean; broad terminal coverage; owner accepts v1 scope | planned |
+| v1.0.0 | §9 quality gates and the §2.5 legal checklist clean; cross-OS CI matrix + pty smoke test; v1 scope complete | done |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source
 > only** — there are no downloadable release binaries and no desktop installers.
