@@ -100,7 +100,8 @@ fn workflow_art_piece_is_typed_completed_and_released() {
         show_art: false,
         ..Config::default()
     };
-    let mut engine = Engine::new(40, 14, config, ArtLibrary::built_in(), 5);
+    // Big enough frame for the largest built-in piece (crossbones: 29x19).
+    let mut engine = Engine::new(80, 40, config, ArtLibrary::built_in(), 5);
 
     engine.summon();
     assert_eq!(engine.art_state(), ArtState::Typing);
@@ -117,8 +118,20 @@ fn workflow_art_piece_is_typed_completed_and_released() {
         .expect("a piece is on screen")
         .ink_count();
     assert!(piece_ink > 0);
-    // A fully drawn piece contributes bright cells on top of the rain heads.
-    assert!(count_intensity(&engine, 3) >= piece_ink);
+    // A fully drawn piece contributes inked cells on top of the rain heads.
+    // Every ink cell should have non-zero intensity (tone-mapped).
+    let frame = engine.frame();
+    let piece = engine.current_piece().expect("a piece is on screen");
+    let mut lit = 0;
+    for y in 0..piece.height() {
+        for x in 0..piece.width() {
+            if piece.glyph(x, y) != ' ' {
+                lit += 1;
+                assert!(frame.cell(engine.art_x + x, engine.art_y + y).intensity != 0);
+            }
+        }
+    }
+    assert_eq!(lit, piece_ink);
 
     while engine.art_state() != ArtState::Idle && steps < 8_000 {
         engine.step();
@@ -162,6 +175,7 @@ fn workflow_art_rotation_modes() {
     // Sequential: each summon advances one place through the pack.
     let sequential = Config {
         show_art: false,
+        show_phrases: false,
         art_mode: "sequential".to_string(),
         ..Config::default()
     };
@@ -212,6 +226,7 @@ fn workflow_colour_drift_varies_the_ramp() {
 fn workflow_art_title_is_drawn_under_the_piece() {
     let config = Config {
         show_art: false,
+        show_phrases: false,
         show_titles: true,
         art_mode: "single".to_string(),
         art_piece: "moon".to_string(),
