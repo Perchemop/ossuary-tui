@@ -511,5 +511,4 @@ mod tests {
         assert!(url.contains("labels=crash%2Cbug%2Cuser-report"));
         assert!(!url.contains(' '));
     }
-
 }
