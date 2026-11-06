@@ -2,14 +2,34 @@
 
 All notable changes to Ossuary are recorded here.
 
-## [Unreleased]
-
-Nothing pending for the current scope. Reaching **1.0.0** now depends on broad
-hands-on verification across terminals and operating systems, and on the
-maintainer accepting the v1 scope — not on further code.
-
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2026-11-06
+
+First stable release. Ossuary is feature-complete for its v1 scope
+(`docs/scope.md`).
+
+### Added
+
+- **Cross-platform CI matrix**: the headless tests and a release build now run
+  on **Linux, macOS and Windows** on every change, so "works on more than one
+  OS" is CI-proven rather than assumed.
+- **Pseudo-terminal smoke test** (`scripts/pty-smoke.py`): CI starts the real
+  binary under a pty and asserts it enters the alternate screen, hides the
+  cursor and paints a screenful of glyphs.
+
+### Changed
+
+- `ossuary` / `ossuary-core` bumped to **1.0.0**.
+- Both `check` and `matrix` are required status checks (`.ci-required.txt`).
+
+### Known limitations
+
+- Distributed as **source only** — no published binaries, by owner directive.
+- Verified by headless tests plus a Linux pseudo-terminal smoke test; it has not
+  been driven by hand across a wide range of real terminal emulators.
+- Token metrics are recorded as 0 (no instrumentation).
 
 ## [0.5.0] - 2026-11-06
 

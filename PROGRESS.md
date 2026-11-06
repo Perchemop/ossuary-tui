@@ -180,8 +180,32 @@ for the README.
 ### State
 
 - Versions: `ossuary` / `ossuary-core` at 0.5.0. Tags: v0.1.0, v0.3.0, v0.4.0,
-  v0.5.0. No published binaries (by owner directive). The application is
-  complete for the v1 scope subject to the hands-on coverage note above.
+  v0.5.0. No published binaries (by owner directive).
+
+## 2026-11-06 — Session 7: v1.0.0 — cross-OS CI and a runtime smoke test
+
+**Goal:** close the last honesty gap (multi-OS and "it actually runs") and
+declare v1.0.0.
+
+### Done
+
+- **CI matrix** (`matrix`, a required check): headless tests + release build on
+  Linux, macOS and Windows.
+- **Pseudo-terminal smoke test** (`scripts/pty-smoke.py`) wired into the `check`
+  job: starts the real binary under a pty and asserts it enters the alternate
+  screen, hides the cursor and paints a screenful of glyphs.
+- `ossuary` / `ossuary-core` bumped to **1.0.0**; CHANGELOG, ROADMAP,
+  capability inventory, parity and guide-compliance updated.
+
+### Evidence
+
+- CI runs `check` + `matrix`: recorded below once green.
+
+### State
+
+- Versions: `ossuary` / `ossuary-core` at 1.0.0. All v1-scope capabilities
+  implemented and verified by headless tests on three OSes plus a runtime smoke
+  test. No published binaries (source-only, by owner directive).
 
 ### Process note
 

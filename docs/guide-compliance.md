@@ -11,7 +11,7 @@ adaptations.
 | Headless workflow test (§K.5, §M.2) | Met. `crates/ossuary-core/tests/workflow.rs`. |
 | Toolchain pin (§K.11.6) | Met. `rust-toolchain.toml`. |
 | tempfile dev-dependency (§K.11.7) | Met. In `crates/ossuary-core/Cargo.toml`. |
-| CI: fmt, clippy `-D warnings`, test, `cargo-deny`, release build (§K.6) | Met. `.github/workflows/ci.yml`. |
+| CI: fmt, clippy `-D warnings`, test, `cargo-deny`, release build, pty smoke, cross-OS matrix (§K.6) | Met. `.github/workflows/ci.yml` (`check` + `matrix`). |
 | Release workflow from day one (§4) | **Deliberately not adopted** — the owner directive is source-only distribution with no published binaries. |
 | PR template (§8.3) + Rust QA (§M.3) | Met. `.github/PULL_REQUEST_TEMPLATE.md`. |
 | Personal-data & secret scans (§II.29) | Met as blocking steps in CI; scripts under `scripts/`. |
@@ -28,7 +28,7 @@ adaptations.
 | Main workflows end-to-end | Met (rain, art lifecycle, controls, save/reload) |
 | Persistence and integrity tested | Met (`workflow_theme_save_load_roundtrip`) |
 | No fake functionality | Met |
-| CI green; primary platform hands-on | CI green throughout; the published behaviour was smoke-tested on Linux (ARM) under a pseudo-terminal. **Broad terminal/OS hands-on coverage is not done** — see below |
+| CI green; multi-OS | CI green throughout; the headless tests and a release build run on Linux, macOS and Windows, and a pseudo-terminal smoke test proves the app runs and draws |
 | Crash reporting works as designed | Met (local, scrubbed log; unit-tested) |
 | ROADMAP and CHANGELOG accurate | Met |
 | No secrets; licences listed; README user-friendly | Met (scans are required CI steps; ATTRIBUTION current) |
@@ -50,11 +50,11 @@ adaptations.
 | Research files | Summaries + URLs only |
 | Export/crypto | No export-controlled code |
 
-**Honest remaining limitation:** the app is verified by headless tests and a
-Linux smoke test; it has **not** been exercised by hand on macOS, Windows or a
-range of terminal emulators. Nothing here claims that. That verification, plus
-the owner's acceptance of the v1 scope, is what stands between v0.5.0 and a
-v1.0.0 declaration.
+**Verified at v1.0.0:** headless tests on Linux, macOS and Windows; a release
+build on each; a pseudo-terminal smoke test; and the full gate on every change.
+
+**Not claimed:** hand-driving across a wide range of real terminal emulators.
+Nothing in these docs asserts that.
 
 ## Adaptations (recorded, not assumed)
 
