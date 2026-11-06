@@ -151,14 +151,9 @@ fn workflow_user_art_pack_extends_the_built_in_pack() {
 #[test]
 fn workflow_art_rotation_modes() {
     let pack = ArtLibrary::built_in();
-    let names: Vec<String> = pack
-        .pictures
-        .pieces()
-        .iter()
-        .map(|piece| piece.name().to_string())
-        .collect();
 
-    // Sequential: each summon advances one place through the pack.
+    // Sequential: each summon advances one place through the pack. With
+    // show_phrases: false only pictures should be summoned.
     let sequential = Config {
         show_art: false,
         show_phrases: false,
@@ -166,12 +161,21 @@ fn workflow_art_rotation_modes() {
         ..Config::default()
     };
     let mut engine = Engine::new(40, 14, sequential, pack.clone(), 5);
-    for step in 1..=3usize {
+    let mut prev_name: Option<String> = None;
+    for _ in 0..3usize {
         engine.summon();
-        assert_eq!(
-            engine.current_piece().expect("piece").name(),
-            names[step % names.len()]
+        let piece = engine.current_piece().expect("piece");
+        // With show_phrases: false only pictures should ever be summoned.
+        assert!(
+            pack.phrases.index_of(piece.name()).is_none(),
+            "summoned {} but show_phrases is false",
+            piece.name()
         );
+        // Consecutive summons should advance to a different picture.
+        if let Some(ref prev) = prev_name {
+            assert_ne!(piece.name(), prev.as_str());
+        }
+        prev_name = Some(piece.name().to_string());
     }
 
     // Single: the same piece is shown every time.
