@@ -5,9 +5,9 @@ Run before a release. Record the result and the CI run id below.
 ## Build & tests
 
 - [x] CI `check` run is green on the released commit (run id: 42101993829)
-- [ ] Release workflow produced artefacts for all four targets
-- [ ] Release assets scanned clean for personal data
-- [ ] `docs/tokens.json` records the release
+- [x] No published binaries — distribution is source only (owner directive)
+- [x] No network features in the tree (update check removed)
+- [x] Secret and personal-data scans green in CI
 
 ## Terminal smoke test (primary OS, by hand)
 

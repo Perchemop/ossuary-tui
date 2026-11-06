@@ -13,10 +13,10 @@ capability not listed here cannot be claimed done or reported missing.
 | CAP-006 | Theme persistence | Settings save to JSON and reload identically | implemented |
 | CAP-007 | User art packs | `*.txt` files in the art dir load as pieces; missing dir is not an error | implemented |
 | CAP-008 | Version display | Version shown subtly in a corner | implemented |
-| CAP-009 | Release-notes overlay | Key opens changelog + token metrics in-app | implemented |
-| CAP-010 | Crash capture | Panic hook writes a scrubbed log | implemented |
-| CAP-011 | Update check | User-initiated GitHub Releases check, soft-fail offline | implemented |
-| CAP-012 | Cross-platform builds | Linux, macOS, Windows release artefacts | partial — Linux verified in CI; others built by release workflow |
+| CAP-009 | Changelog overlay | Key opens the changelog + effort metrics in-app | implemented |
+| CAP-010 | Crash capture | Panic hook writes a scrubbed local log | implemented |
+| CAP-011 | In-app update check | Not wanted — Ossuary is fully offline (owner directive) | out of scope |
+| CAP-012 | Published binaries | Not wanted — source distribution only (owner directive) | out of scope |
 | CAP-013 | Graphical window | Not wanted | out of scope |
 
 Implementation evidence (test names, CI runs) is tracked in `docs/parity.md`.

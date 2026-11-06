@@ -8,7 +8,6 @@ members = [
     "apps/ossuary",
     "crates/crash-report",
     "crates/ossuary-core",
-    "crates/update-check",
 ]
 
 # One shared release profile keeps artefacts identical across the suite.

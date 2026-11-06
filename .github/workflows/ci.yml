@@ -43,15 +43,10 @@ jobs:
           command: check
           arguments: --all-features
 
-      - name: Build release binary (primary OS)
-        run: cargo build --release -p ossuary
-
-      - name: Upload release binary artefact
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: ossuary-linux-x86_64
-          path: target/release/ossuary
-          if-no-files-found: error
+      # A compile gate only: Ossuary publishes no binaries (it is a terminal
+      # program you build or `cargo install` yourself).
+      - name: Build (release)
+        run: cargo build --release
 
       # The lockfile is generated here and uploaded so it can be committed
       # without ever running cargo on the maintainer's machine (guide §4).

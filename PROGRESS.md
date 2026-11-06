@@ -36,8 +36,9 @@ Append-only log of work done, with the evidence for each claim.
 
 ### v0.1.0 released
 
-- Tag `v0.1.0` published as a GitHub Release:
-  <https://github.com/Perchemop/ossuary-tui/releases/tag/v0.1.0>
+- Tag `v0.1.0` published as a GitHub Release (later **withdrawn** on
+  2026-11-06, when the owner moved Ossuary to source-only distribution; the git
+  tag remains).
 - Release workflow run
   [42103857872](https://github.com/Perchemop/ossuary-tui/actions/runs/42103857872):
   all four targets built (`linux-x86_64`, `linux-arm64`, `macos-arm64`,
@@ -75,8 +76,34 @@ Append-only log of work done, with the evidence for each claim.
 
 ### Next
 
-- Tag and publish `v0.2.0`.
-- Begin v0.3.0 (art rotation modes, colour drift, art titles).
+- Tag `v0.2.0`.
+- Begin v0.3.0 (distribution change requested by the owner).
+
+## 2026-11-06 — Session 3: v0.3.0 — TUI-only, source-only, fully offline
+
+**Goal (owner directive):** "I only want this app available as a tui, not
+desktop releases."
+
+### Done
+
+- Removed `.github/workflows/release.yml` and the four-platform binary
+  artefacts; CI now builds in release mode as a compile gate only.
+- Removed the vendored `update-check` crate and the in-app update check; the
+  `u` key is gone and `V` opens the changelog.
+- Stripped the unused network-submit path from `crash-report`, so no TLS/HTTP
+  stack is linked in. Ossuary is now fully offline.
+- Removed the release-only helper scripts.
+- Rewrote the README around installing/running from source in a terminal.
+- Updated scope, roadmap, architecture, capability inventory, parity,
+  guide-compliance, ATTRIBUTION, SECURITY, CHANGELOG and DECISIONS.
+
+### Evidence
+
+- CI `check` run: recorded once green.
+
+### Next
+
+- v0.4.0: art rotation modes, colour drift, art titles, first-run overlay.
 
 ### Process note
 

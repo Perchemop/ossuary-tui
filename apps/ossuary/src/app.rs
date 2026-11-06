@@ -2,7 +2,6 @@
 
 use std::io::{self, BufWriter, Stdout, Write};
 use std::path::PathBuf;
-use std::sync::mpsc::{self, Receiver};
 use std::time::Duration;
 
 use crossterm::cursor::{Hide, MoveTo, Show};
@@ -11,20 +10,16 @@ use crossterm::style::{Color, Print, ResetColor, SetForegroundColor};
 use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
 use crossterm::{execute, queue};
 use ossuary_core::{ArtPack, Config, Engine, VERSION, default_config_path, log_dir, user_art_dir};
-use update_check::{UpdateChecker, UpdateStatus};
 
 use crate::palette::color_for;
 
 /// Milliseconds between simulation steps (roughly 24 frames per second).
 const FRAME_MS: u64 = 42;
 
-/// GitHub repository used for the update check.
-const REPO: &str = "Perchemop/ossuary-tui";
-
-/// Embedded release history for the in-app release-notes overlay.
+/// Embedded changelog for the in-app release-history overlay.
 const RELEASE_NOTES: &str = include_str!("../../../CHANGELOG.md");
 
-/// Embedded token ledger for the in-app release-notes overlay (guide §12.1).
+/// Embedded token/effort ledger shown alongside the changelog (guide §12.1).
 const TOKEN_LEDGER: &str = include_str!("../../../docs/tokens.json");
 
 /// The interactive application state.
@@ -37,8 +32,6 @@ struct App {
     show_help: bool,
     show_notes: bool,
     status: String,
-    update_rx: Option<Receiver<UpdateStatus>>,
-    update_status: Option<UpdateStatus>,
 }
 
 impl App {
@@ -67,8 +60,6 @@ impl App {
             show_help: false,
             show_notes: false,
             status: "welcome to Ossuary — press ? for help".to_string(),
-            update_rx: None,
-            update_status: None,
         }
     }
 
@@ -185,7 +176,6 @@ impl App {
             KeyCode::Char('s') => self.save(),
             KeyCode::Char('?') | KeyCode::Char('h') => self.show_help = true,
             KeyCode::Char('V') => self.show_notes = true,
-            KeyCode::Char('u') | KeyCode::Char('U') => self.start_update_check(),
             _ => {}
         }
     }
@@ -200,39 +190,6 @@ impl App {
                 Err(error) => self.note(&format!("could not save theme: {error}")),
             },
             None => self.note("no configuration directory available to save into"),
-        }
-    }
-
-    fn start_update_check(&mut self) {
-        if self.update_rx.is_some() {
-            self.note("already checking for updates");
-            return;
-        }
-        let (tx, rx) = mpsc::channel();
-        std::thread::spawn(move || {
-            let checker = UpdateChecker::new();
-            let status = checker.check_uncached(REPO, VERSION);
-            let _ = tx.send(status);
-        });
-        self.update_rx = Some(rx);
-        self.note("checking for updates…");
-    }
-
-    fn poll_update(&mut self) {
-        let received = match &self.update_rx {
-            Some(rx) => rx.try_recv().ok(),
-            None => None,
-        };
-        if let Some(status) = received {
-            self.status = match &status {
-                UpdateStatus::UpToDate { current } => format!("Ossuary {current} is up to date"),
-                UpdateStatus::UpdateAvailable(release) => {
-                    format!("update available: {} — {}", release.tag, release.url)
-                }
-                UpdateStatus::Unknown(reason) => format!("could not check for updates: {reason}"),
-            };
-            self.update_status = Some(status);
-            self.update_rx = None;
         }
     }
 
@@ -268,10 +225,7 @@ impl App {
             SetForegroundColor(Color::DarkGrey),
             Print(pad_or_truncate(&self.status, width))
         )?;
-        let mut version = format!("v{VERSION}");
-        if matches!(&self.update_status, Some(UpdateStatus::UpdateAvailable(_))) {
-            version.push_str(" *");
-        }
+        let version = format!("v{VERSION}");
         let version_x = width.saturating_sub(version.chars().count()) as u16;
         queue!(
             out,
@@ -291,7 +245,7 @@ impl App {
     }
 
     fn draw_help(&self, out: &mut BufWriter<Stdout>, width: usize) -> io::Result<()> {
-        const LINES: [&str; 14] = [
+        const LINES: [&str; 13] = [
             "Ossuary — keys",
             "",
             "space      pause / resume",
@@ -303,8 +257,7 @@ impl App {
             "f          cycle flicker",
             "m          monochrome / green",
             "s          save theme",
-            "u          check for updates",
-            "V          release notes",
+            "V          changelog",
             "? or Esc   close this help   |   q  quit",
         ];
         for (index, line) in LINES.iter().enumerate() {
@@ -321,7 +274,7 @@ impl App {
     }
 
     fn draw_notes(&self, out: &mut BufWriter<Stdout>, width: usize, height: u16) -> io::Result<()> {
-        let header = format!("Ossuary {VERSION} — release notes (V or Esc to close)");
+        let header = format!("Ossuary {VERSION} — changelog (V or Esc to close)");
         queue!(
             out,
             MoveTo(0, 0),
@@ -444,7 +397,6 @@ fn event_loop(app: &mut App) -> io::Result<()> {
                 }
             }
         }
-        app.poll_update();
         if !app.paused {
             app.engine.step();
         }
@@ -473,7 +425,7 @@ fn print_help() {
            -h, --help        print this help and exit\n\
          \n\
          Keys: space pause · g glyphs · n art · a auto-art · +/- speed ·\n\
-               [/] density · f flicker · m palette · s save · u update ·\n\
-               V release notes · ? help · q quit"
+               [/] density · f flicker · m palette · s save ·\n\
+               V changelog · ? help · q quit"
     );
 }

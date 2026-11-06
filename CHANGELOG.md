@@ -5,6 +5,32 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-11-06
+
+Ossuary is now a self-contained, offline terminal application distributed as
+**source only** — there are no published binaries.
+
+### Changed
+
+- **Distribution:** removed the release workflow and the four-platform binary
+  artefacts. Install with `cargo install --git https://github.com/Perchemop/ossuary-tui ossuary`
+  or run it from a clone.
+- **Fully offline:** removed the in-app update check and the vendored
+  `update-check` crate, and stripped the unused network-submit path from
+  `crash-report`. No TLS/HTTP stack is linked into the binary any more.
+- **Keys:** the `u` (update check) key is gone; `V` now opens the in-app
+  changelog.
+- README rewritten around running Ossuary in your terminal.
+
+### Removed
+
+- `.github/workflows/release.yml`, `crates/update-check`, and the release-only
+  helper scripts.
+
+### Known limitations
+
+- Token metrics are recorded as 0 (no per-release instrumentation).
+
 ## [0.2.0] - 2026-11-06
 
 Second release: a stricter supply-chain gate and a larger art pack.

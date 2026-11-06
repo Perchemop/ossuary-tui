@@ -23,8 +23,9 @@ Facts / Assumptions / Decisions are marked `[Fact]`, `[Assumption]`,
    type-art and whole pictures) and it runs anywhere a terminal runs.
    `[Decision]`
 4. **Suite membership**: Yes — part of the same free-Rust-app suite as Rubric
-   and Lintel, and it consumes the shared `crash-report` and `update-check`
-   crates. `[Decision]`
+   and Lintel, and it consumes the shared `crash-report` crate. (It also
+   briefly vendored `update-check`, later removed when the owner made Ossuary
+   fully offline and source-only — see `DECISIONS.md` D-007.) `[Decision]`
 
 ## B. Inspiration & scope
 
@@ -60,8 +61,9 @@ Facts / Assumptions / Decisions are marked `[Fact]`, `[Assumption]`,
 14. **Constrained machine**: The local host is memory-constrained; **all** heavy
     work (format, lint, test, release build) runs in GitHub Actions.
     `[Fact — AGENTS.md "CI-first"]`
-15. **Crash + update**: Shared `crash-report` (panic hook to a log file) and
-    `update-check` (GitHub Releases API, soft-fail) crates. `[Decision]`
+15. **Crash log**: Shared `crash-report` (panic hook to a scrubbed local log).
+    No update check and no network at all (owner directive, 2026-11-06).
+    `[Decision]`
 
 ## E. Name
 

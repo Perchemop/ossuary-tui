@@ -11,6 +11,9 @@ Everything not explicitly confirmed is listed here, per guide §II.24.2.
   controls plus saved themes. `[Decision]`
 - **Q-ART** — art is **original in-house work**, with **user-loadable packs**;
   no third-party art is copied. `[Decision]`
+- **Q-DIST** — Ossuary is distributed as **source only** (TUI): no published
+  binaries, no installers, and no network features (the update check was
+  removed). `[Decision — owner directive, 2026-11-06]`
 
 ## Assumptions still open (inferred, not separately confirmed)
 

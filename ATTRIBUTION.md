@@ -8,29 +8,19 @@ is complete (guide §2.2, §II.19.3).
 
 | Crate | Version | Licence | Purpose |
 |-------|---------|---------|---------|
-| `serde` | 1 | MIT OR Apache-2.0 | Serialisation of the theme and payloads |
-| `serde_json` | 1 | MIT OR Apache-2.0 | JSON theme files and API payloads |
+| `serde` | 1 | MIT OR Apache-2.0 | Serialisation of the theme and of crash reports |
+| `serde_json` | 1 | MIT OR Apache-2.0 | JSON theme files and crash-log payloads |
 | `thiserror` | 2 | MIT OR Apache-2.0 | Typed error enums in the core crate |
 | `tempfile` (dev) | 3 | MIT OR Apache-2.0 | Isolated temp directories in workflow tests |
 | `uuid` | 1 | Apache-2.0 OR MIT | Unique crash-log file names |
-| `ureq` | 3 | MIT OR Apache-2.0 | Synchronous HTTP for the optional update check / crash submit |
 | `crossterm` | 0.28 | MIT | Terminal raw mode, colours, cursor and events |
 
-Notable transitive dependencies pulled in by `ureq`'s default TLS stack:
-
-| Crate | Licence | Purpose |
-|-------|---------|---------|
-| `rustls` / `rustls-webpki` | Apache-2.0 OR ISC | TLS for the update check |
-| `ring` | ISC AND MIT AND OpenSSL (permissive) | Cryptography for TLS |
-| `webpki-roots` | MPL-2.0 | Bundled TLS root certificates |
-| `icu_*` / `zerovec` / `writeable` | Unicode-3.0 | IDNA/URL handling |
-| `memchr` | MIT OR Unlicense | Fast byte search |
-| `adler2` | 0BSD OR MIT OR Apache-2.0 | Compression checksum |
+Ossuary has **no network dependencies**: the vendored `crash-report` crate only
+writes a local log, so no TLS/HTTP stack is linked in.
 
 The full transitive dependency list, with licences, is emitted as an SBOM
 (`cargo tree`) by CI and can be regenerated with `cargo tree --workspace`. A
-`deny.toml` allows only permissive licences (plus MPL-2.0 and the bundled font
-licences) and bans strong copyleft.
+`deny.toml` allows only permissive licences and bans strong copyleft.
 
 ## Fonts and assets
 
