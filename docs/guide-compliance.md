@@ -18,6 +18,44 @@ adaptations.
 | No heavy local builds (§4, §K.11.8) | Met. All build/test ran in CI via `ci.sh`. |
 | Token ledger (§12.1) | Met. `docs/tokens.json`; release workflow records each tag. |
 
+## Final gate review (as of v0.5.0, 2026-11-06)
+
+**Guide §9 — quality gates**
+
+| Gate | Status |
+|------|--------|
+| Every in-scope capability implemented and verified | Met for the v1 scope in `docs/scope.md`; parity per `docs/parity.md` |
+| Main workflows end-to-end | Met (rain, art lifecycle, controls, save/reload) |
+| Persistence and integrity tested | Met (`workflow_theme_save_load_roundtrip`) |
+| No fake functionality | Met |
+| CI green; primary platform hands-on | CI green throughout; the published behaviour was smoke-tested on Linux (ARM) under a pseudo-terminal. **Broad terminal/OS hands-on coverage is not done** — see below |
+| Crash reporting works as designed | Met (local, scrubbed log; unit-tested) |
+| ROADMAP and CHANGELOG accurate | Met |
+| No secrets; licences listed; README user-friendly | Met (scans are required CI steps; ATTRIBUTION current) |
+| §2.5 legal checklist clean | Met (see below) |
+
+**§2.5 — legal checklist**
+
+| Area | Status |
+|------|--------|
+| Copyright | Clean — original code and original art only |
+| Clean-room | Clean — `docs/inspiration.md` is summaries + URLs; no RE material |
+| Trademarks | Product name and mark are original; no vendor marks |
+| Trade dress | Original visual language |
+| Patents | No known patented technique implemented |
+| Licence | MIT OR Apache-2.0; third-party list in ATTRIBUTION; `cargo-deny` blocks copyleft |
+| Secrets | None in tree, history or artefacts; secret scan is required |
+| Privacy | No network at all; crash log is local and scrubbed |
+| Claims | README/roadmap make no affiliation or "drop-in replacement" claims |
+| Research files | Summaries + URLs only |
+| Export/crypto | No export-controlled code |
+
+**Honest remaining limitation:** the app is verified by headless tests and a
+Linux smoke test; it has **not** been exercised by hand on macOS, Windows or a
+range of terminal emulators. Nothing here claims that. That verification, plus
+the owner's acceptance of the v1 scope, is what stands between v0.5.0 and a
+v1.0.0 declaration.
+
 ## Adaptations (recorded, not assumed)
 
 - **GitHub operations via `gh`, not a GitHub MCP server.** The server is not in

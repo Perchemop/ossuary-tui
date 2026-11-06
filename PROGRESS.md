@@ -158,6 +158,31 @@ for the README.
   README.
 - v1.0.0: the final §9 + §2.5 gate review, pending owner acceptance.
 
+### Next
+
+- Tag `v0.5.0`.
+- Final gate review; v1.0.0 awaits broad hands-on coverage and owner acceptance.
+
+## 2026-11-06 — Session 6: README visuals landed; gate review
+
+### Done
+
+- Preview images committed to `docs/images/` and embedded in the README.
+- Tag `v0.5.0` created.
+- A final §9 / §2.5 gate review written into `docs/guide-compliance.md`: every
+  in-scope capability is implemented and tested, and the legal checklist is
+  clean. The one honest gap is broad hands-on terminal/OS coverage.
+
+### Evidence
+
+- CI `check` runs for v0.5.0 (renderer + images): green.
+
+### State
+
+- Versions: `ossuary` / `ossuary-core` at 0.5.0. Tags: v0.1.0, v0.3.0, v0.4.0,
+  v0.5.0. No published binaries (by owner directive). The application is
+  complete for the v1 scope subject to the hands-on coverage note above.
+
 ### Process note
 
 One friction item logged in `docs/process-feedback.md` (bootstrapping

@@ -7,9 +7,10 @@ scope in `docs/scope.md`.
 ## Status
 
 - **v0.1.0 — first functional test build**: shipped (see `CHANGELOG.md`).
-- **v1 scope readiness: ~75%** (verified: rain, glyphs, art lifecycle, controls,
-  persistence, user art, version/notes, crash + update crates, CI. Unverified:
-  hands-on macOS/Windows.)
+- **v1 scope readiness: 100% of in-scope capabilities implemented and verified
+  by headless tests; hand-verified on Linux.** Remaining before a 1.0.0
+  declaration: broad hands-on terminal/OS coverage and owner acceptance — not
+  code.
 
 ## Milestones
 

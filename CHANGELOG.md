@@ -2,6 +2,12 @@
 
 All notable changes to Ossuary are recorded here.
 
+## [Unreleased]
+
+Nothing pending for the current scope. Reaching **1.0.0** now depends on broad
+hands-on verification across terminals and operating systems, and on the
+maintainer accepting the v1 scope — not on further code.
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
