@@ -34,6 +34,7 @@ fn workflow_theme_save_load_roundtrip() {
         show_art: false,
         art_interval: 500,
         monochrome: false,
+        ..Config::default()
     };
     config.save_to(&path).expect("save theme");
 
