@@ -147,3 +147,92 @@ fn workflow_user_art_pack_extends_the_built_in_pack() {
     assert_eq!(frame.height(), 3);
     assert_eq!(frame.cell(2, 2), Cell::EMPTY);
 }
+
+#[test]
+fn workflow_art_rotation_modes() {
+    let pack = ArtPack::built_in();
+    let names: Vec<String> = pack
+        .pieces()
+        .iter()
+        .map(|piece| piece.name().to_string())
+        .collect();
+
+    // Sequential: each summon advances one place through the pack.
+    let sequential = Config {
+        show_art: false,
+        art_mode: "sequential".to_string(),
+        ..Config::default()
+    };
+    let mut engine = Engine::new(40, 14, sequential, pack.clone(), 5);
+    for step in 1..=3usize {
+        engine.summon();
+        assert_eq!(
+            engine.current_piece().expect("piece").name(),
+            names[step % names.len()]
+        );
+    }
+
+    // Single: the same piece is shown every time.
+    let single = Config {
+        show_art: false,
+        art_mode: "single".to_string(),
+        art_piece: "moon".to_string(),
+        ..Config::default()
+    };
+    let mut engine = Engine::new(40, 14, single, ArtPack::built_in(), 6);
+    for _ in 0..3 {
+        engine.summon();
+        assert_eq!(engine.current_piece().expect("piece").name(), "moon");
+    }
+}
+
+#[test]
+fn workflow_colour_drift_varies_the_ramp() {
+    let plain = Config::default();
+    let drifted = Config {
+        color_drift: true,
+        ..Config::default()
+    };
+    let mut a = Engine::new(60, 18, plain, ArtPack::empty(), 321);
+    let mut b = Engine::new(60, 18, drifted, ArtPack::empty(), 321);
+    for _ in 0..60 {
+        a.step();
+        b.step();
+    }
+    assert_ne!(
+        a.frame(),
+        b.frame(),
+        "colour drift should change the rendered ramp"
+    );
+}
+
+#[test]
+fn workflow_art_title_is_drawn_under_the_piece() {
+    let config = Config {
+        show_art: false,
+        show_titles: true,
+        art_mode: "single".to_string(),
+        art_piece: "moon".to_string(),
+        ..Config::default()
+    };
+    let mut engine = Engine::new(40, 16, config, ArtPack::built_in(), 9);
+    engine.summon();
+    let mut steps = 0;
+    while engine.art_state() != ArtState::Holding && steps < 2_000 {
+        engine.step();
+        steps += 1;
+    }
+
+    let frame = engine.frame();
+    let mut found = false;
+    for y in 0..frame.height() {
+        let mut row = String::new();
+        for x in 0..frame.width() {
+            row.push(frame.cell(x, y).ch);
+        }
+        if row.contains("moon") {
+            found = true;
+        }
+    }
+    assert!(found, "the piece title should be visible in the frame");
+}

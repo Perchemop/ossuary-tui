@@ -99,11 +99,39 @@ desktop releases."
 
 ### Evidence
 
-- CI `check` run: recorded once green.
+- CI `check` run
+  [42182730504](https://github.com/Perchemop/ossuary-tui/actions/runs/42182730504):
+  **success** — the offline refactor compiles and tests green, `cargo-deny`
+  confirms the reduced tree, and `Cargo.lock` regenerated to 71 packages with
+  no TLS/HTTP stack.
+- The `v0.1.0` GitHub Release (binaries) was **withdrawn**; the git tag remains.
+- Tag `v0.3.0` created (no release workflow, so no artefacts).
 
 ### Next
 
 - v0.4.0: art rotation modes, colour drift, art titles, first-run overlay.
+
+## 2026-11-06 — Session 4: v0.4.0 — art variety and first-run polish
+
+**Goal:** the v0.4.0 roadmap items.
+
+### Done
+
+- Art rotation modes (`r`): sequential, random, or a single pinned piece.
+- Per-column colour drift within the monochrome ramp (`d`).
+- Optional art titles drawn beneath the current piece (`t`).
+- First-run welcome: a missing theme file opens the key help automatically.
+- Config extended (backwards-compatible through serde defaults); core tests
+  added for every new behaviour; shell keys and help updated.
+- `ossuary` / `ossuary-core` bumped to 0.4.0.
+
+### Evidence
+
+- CI `check` run: recorded once green.
+
+### Next
+
+- v1.0.0: README visuals and the final §9 + §2.5 gate review.
 
 ### Process note
 

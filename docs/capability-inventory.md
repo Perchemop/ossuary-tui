@@ -15,6 +15,10 @@ capability not listed here cannot be claimed done or reported missing.
 | CAP-008 | Version display | Version shown subtly in a corner | implemented |
 | CAP-009 | Changelog overlay | Key opens the changelog + effort metrics in-app | implemented |
 | CAP-010 | Crash capture | Panic hook writes a scrubbed local log | implemented |
+| CAP-014 | Art rotation modes | `r` cycles sequential → random → single-piece | implemented |
+| CAP-015 | Colour drift | `d` varies each column's brightness band within the ramp | implemented |
+| CAP-016 | Art titles | `t` labels the current piece with its name | implemented |
+| CAP-017 | First-run welcome | A fresh install opens the key help automatically | implemented |
 | CAP-011 | In-app update check | Not wanted — Ossuary is fully offline (owner directive) | out of scope |
 | CAP-012 | Published binaries | Not wanted — source distribution only (owner directive) | out of scope |
 | CAP-013 | Graphical window | Not wanted | out of scope |

@@ -36,6 +36,12 @@ struct App {
 
 impl App {
     fn new(config_path: Option<PathBuf>, seed: u64) -> Self {
+        // A missing theme file means this is the first run: open the help
+        // overlay as a welcome so the keys are discoverable immediately.
+        let first_run = match &config_path {
+            Some(path) => !path.exists(),
+            None => false,
+        };
         let loaded = config_path
             .as_deref()
             .map(Config::load_or_default)
@@ -57,9 +63,13 @@ impl App {
             config_path,
             paused: false,
             quit: false,
-            show_help: false,
+            show_help: first_run,
             show_notes: false,
-            status: "welcome to Ossuary — press ? for help".to_string(),
+            status: if first_run {
+                "welcome to Ossuary — press ? for help".to_string()
+            } else {
+                "press ? for help".to_string()
+            },
         }
     }
 
@@ -174,6 +184,24 @@ impl App {
                 self.note(&format!("palette: {palette}"));
             }
             KeyCode::Char('s') => self.save(),
+            KeyCode::Char('r') => {
+                self.config.cycle_art_mode();
+                self.apply_config();
+                let mode = self.config.art_mode.clone();
+                self.note(&format!("art mode: {mode}"));
+            }
+            KeyCode::Char('d') => {
+                self.config.color_drift = !self.config.color_drift;
+                self.apply_config();
+                let state = if self.config.color_drift { "on" } else { "off" };
+                self.note(&format!("colour drift: {state}"));
+            }
+            KeyCode::Char('t') => {
+                self.config.show_titles = !self.config.show_titles;
+                self.apply_config();
+                let state = if self.config.show_titles { "on" } else { "off" };
+                self.note(&format!("art titles: {state}"));
+            }
             KeyCode::Char('?') | KeyCode::Char('h') => self.show_help = true,
             KeyCode::Char('V') => self.show_notes = true,
             _ => {}
@@ -245,17 +273,20 @@ impl App {
     }
 
     fn draw_help(&self, out: &mut BufWriter<Stdout>, width: usize) -> io::Result<()> {
-        const LINES: [&str; 13] = [
+        const LINES: [&str; 16] = [
             "Ossuary — keys",
             "",
             "space      pause / resume",
             "g          next glyph set",
             "n          summon an art piece",
             "a          toggle automatic art",
+            "r          next art rotation mode",
             "+ / -      faster / slower",
             "] / [      denser / sparser",
             "f          cycle flicker",
             "m          monochrome / green",
+            "d          toggle colour drift",
+            "t          toggle art titles",
             "s          save theme",
             "V          changelog",
             "? or Esc   close this help   |   q  quit",
@@ -424,8 +455,8 @@ fn print_help() {
            -V, --version     print the version and exit\n\
            -h, --help        print this help and exit\n\
          \n\
-         Keys: space pause · g glyphs · n art · a auto-art · +/- speed ·\n\
-               [/] density · f flicker · m palette · s save ·\n\
-               V changelog · ? help · q quit"
+         Keys: space pause · g glyphs · n art · a auto-art · r rotation ·\n\
+               +/- speed · [/] density · f flicker · m palette ·\n\
+               d drift · t titles · s save · V changelog · ? help · q quit"
     );
 }

@@ -5,6 +5,26 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-11-06
+
+More art variety, plus first-run polish.
+
+### Added
+
+- **Art rotation modes** (`r`): cycle sequential → random → single-piece.
+- **Colour drift** (`d`): each column's brightness is nudged within the
+  monochrome ramp for a little extra depth.
+- **Art titles** (`t`): label the piece currently on screen with its name.
+- **First-run welcome**: a fresh install opens the key help automatically.
+
+### Changed
+
+- `ossuary` and `ossuary-core` bumped to **0.4.0**.
+
+### Known limitations
+
+- Token metrics are recorded as 0 (no instrumentation).
+
 ## [0.3.0] - 2026-11-06
 
 Ossuary is now a self-contained, offline terminal application distributed as

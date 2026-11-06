@@ -116,6 +116,8 @@ struct Column {
     chars: Vec<char>,
     /// Intended trail length.
     len: usize,
+    /// Brightness-band offset (−1, 0 or +1) for colour drift.
+    drift: i8,
     /// Whether this column is currently raining.
     active: bool,
 }
@@ -140,12 +142,18 @@ impl Column {
         } else {
             rng.below(height.max(1)) as i64
         };
+        let drift = if config.color_drift {
+            [-1i8, 0, 1][rng.below(3)]
+        } else {
+            0
+        };
         Self {
             head,
             factor: rng.range_f32(0.5, 1.5),
             accum: 0.0,
             chars,
             len,
+            drift,
             active: rng.next_f32() < config.density,
         }
     }
@@ -277,10 +285,18 @@ impl Engine {
     }
 
     fn start_art(&mut self) {
-        if self.pack.is_empty() {
+        let count = self.pack.len();
+        if count == 0 {
             return;
         }
-        self.art_index = (self.art_index + 1) % self.pack.len();
+        self.art_index = match self.config.art_mode.as_str() {
+            "random" => self.rng.below(count),
+            "single" => self
+                .pack
+                .index_of(&self.config.art_piece)
+                .unwrap_or((self.art_index + 1) % count),
+            _ => (self.art_index + 1) % count,
+        };
         self.art_revealed = 0;
         self.art_state = ArtState::Typing;
         self.reposition_art();
@@ -394,13 +410,14 @@ impl Engine {
                 if row < 0 || row >= self.height as i64 {
                     continue;
                 }
-                let intensity = if distance == 0 {
+                let base = if distance == 0 {
                     3
                 } else if distance * 3 < count {
                     2
                 } else {
                     1
                 };
+                let intensity = (i16::from(base) + i16::from(column.drift)).clamp(1, 3) as u8;
                 frame.set(x, row as usize, Cell { ch, intensity });
             }
         }
@@ -426,6 +443,23 @@ impl Engine {
             if let Some((px, py, ch)) = piece.ink_at(index) {
                 frame.set(self.art_x + px, self.art_y + py, Cell { ch, intensity });
             }
+        }
+        if self.config.show_titles && self.art_state != ArtState::Dissolving {
+            Self::draw_title(frame, piece, self.art_x, self.art_y);
+        }
+    }
+
+    /// Write the piece's name, centred, one row beneath it.
+    fn draw_title(frame: &mut Frame, piece: &ArtPiece, art_x: usize, art_y: usize) {
+        let title = piece.name();
+        let row = art_y + piece.height() + 1;
+        if row >= frame.height() {
+            return;
+        }
+        let text_width = title.chars().count();
+        let col = art_x + piece.width().saturating_sub(text_width) / 2;
+        for (offset, ch) in title.chars().enumerate() {
+            frame.set(col + offset, row, Cell { ch, intensity: 2 });
         }
     }
 }
