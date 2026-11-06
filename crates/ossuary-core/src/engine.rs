@@ -410,7 +410,7 @@ impl Engine {
                 if row < 0 || row >= self.height as i64 {
                     continue;
                 }
-                let base = if distance == 0 {
+                let base: u8 = if distance == 0 {
                     3
                 } else if distance * 3 < count {
                     2
