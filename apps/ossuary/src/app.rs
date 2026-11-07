@@ -325,7 +325,13 @@ impl App {
             )?;
         }
 
-        let tokens = format!("token metrics: {}", compact(TOKEN_LEDGER));
+        let tokens = match parse_ledger(TOKEN_LEDGER) {
+            Some((total, release, version)) => format!(
+                "tokens since start: {} | this release: {} (v{})",
+                total, release, version
+            ),
+            None => format!("token metrics: {}", compact(TOKEN_LEDGER)),
+        };
         queue!(
             out,
             MoveTo(0, height),
@@ -352,6 +358,78 @@ fn pad_or_truncate(text: &str, width: usize) -> String {
 /// Collapse all whitespace runs in `text` into single spaces.
 fn compact(text: &str) -> String {
     text.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+/// Parse the three canonical fields out of the single-line token ledger JSON.
+///
+/// Returns `(total_tokens_since_start, release_tokens, release_version)` or
+/// `None` if any field is missing or malformed. No JSON library is used; the
+/// fields are extracted by scanning for their keys.
+fn parse_ledger(json: &str) -> Option<(u64, u64, String)> {
+    let total = extract_u64(json, "total_tokens_since_start")?;
+    let release = extract_u64(json, "release_tokens")?;
+    let version = extract_string(json, "release_version")?;
+    Some((total, release, version))
+}
+
+/// Locate the value slice following `"key"` (with optional whitespace around
+/// the colon) in `json`, or `None` if the key is absent or malformed.
+///
+/// The explicit `'a` is required: with two reference parameters, lifetime
+/// elision cannot infer the output lifetime.
+fn find_value<'a>(json: &'a str, key: &str) -> Option<&'a str> {
+    let needle = format!("\"{}\"", key);
+    let mut search_from = 0;
+    while let Some(rel) = json[search_from..].find(needle.as_str()) {
+        let idx = search_from + rel;
+        let prev_ok = if idx == 0 {
+            true
+        } else {
+            match json[..idx].chars().last() {
+                None => true,
+                Some(c) => c.is_whitespace() || matches!(c, '{' | ',' | '['),
+            }
+        };
+        if prev_ok {
+            let rest = &json[idx + needle.len()..];
+            if let Some(after_colon) = rest.trim_start().strip_prefix(':') {
+                return Some(after_colon.trim_start());
+            }
+        }
+        search_from = idx + 1;
+    }
+    None
+}
+
+/// Extract a `u64` value for `key` from `json`.
+fn extract_u64(json: &str, key: &str) -> Option<u64> {
+    let rest = find_value(json, key)?;
+    let mut end = 0;
+    for (i, c) in rest.char_indices() {
+        if c.is_ascii_digit() {
+            end = i + c.len_utf8();
+        } else {
+            break;
+        }
+    }
+    if end == 0 {
+        return None;
+    }
+    let num_str = &rest[..end];
+    let next = rest[end..].chars().next();
+    match next {
+        None | Some(',') | Some('}') | Some(']') | Some(' ') | Some('\t')
+        | Some('\n') | Some('\r') => {}
+        _ => return None,
+    }
+    num_str.parse::<u64>().ok()
+}
+
+/// Extract a quoted string value for `key` from `json`.
+fn extract_string(json: &str, key: &str) -> Option<String> {
+    let inner = find_value(json, key)?.strip_prefix('"')?;
+    let close = inner.find('"')?;
+    Some(inner[..close].to_string())
 }
 
 /// Parse `--help`, `--version`, `--config`, `--seed`; run the app.
@@ -461,4 +539,42 @@ fn print_help() {
                +/- speed · [/] density · f flicker · m palette ·\n\
                d drift · t titles · s save · V changelog · ? help · q quit"
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_ledger;
+
+    #[test]
+    fn parses_real_single_line_shape() {
+        let json = r#"{"total_tokens_since_start": 19597378, "release_tokens": 6414167, "release_version": "1.5.0", "releases": [{"version":"0.1.0","tokens":0}]}"#;
+        assert_eq!(
+            parse_ledger(json),
+            Some((19597378, 6414167, "1.5.0".to_string()))
+        );
+    }
+
+    #[test]
+    fn handles_varying_whitespace() {
+        let json = r#"{ "total_tokens_since_start" :  42 , "release_tokens":7 , "release_version" :"2.0.0" }"#;
+        assert_eq!(parse_ledger(json), Some((42, 7, "2.0.0".to_string())));
+    }
+
+    #[test]
+    fn missing_field_returns_none() {
+        let json = r#"{"total_tokens_since_start": 1, "release_version": "1.0.0"}"#;
+        assert_eq!(parse_ledger(json), None);
+    }
+
+    #[test]
+    fn malformed_number_returns_none() {
+        let json = r#"{"total_tokens_since_start": abc, "release_tokens": 7, "release_version": "1.0.0"}"#;
+        assert_eq!(parse_ledger(json), None);
+    }
+
+    #[test]
+    fn parses_string_version() {
+        let json = r#"{"total_tokens_since_start": 10, "release_tokens": 20, "release_version": "v9.9.9"}"#;
+        assert_eq!(parse_ledger(json), Some((10, 20, "v9.9.9".to_string())));
+    }
 }

@@ -52,6 +52,11 @@ jobs:
       - name: Terminal smoke test (pseudo-terminal)
         run: python3 scripts/pty-smoke.py target/release/ossuary
 
+      # Token ledger gate (guide §12.1): schema check + release_version must
+      # match the crate manifest.
+      - name: Validate token ledger
+        run: python3 scripts/tokens-update.py validate
+
       # Regenerate the README preview images so they can be reviewed and
       # committed without a terminal (the renderer lives in the headless core).
       - name: Generate preview images

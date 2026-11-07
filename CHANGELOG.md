@@ -5,6 +5,32 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-11-07
+
+### Added
+
+- **Readable token metrics in the release overlay** (`V`): the ledger's three
+  canonical fields are parsed from `docs/tokens.json` and drawn as
+  `tokens since start: N | this release: N (vX.Y.Z)` instead of raw JSON; the
+  raw-JSON rendering remains as the fallback.
+- **Token ledger instrumentation** (closes the §12.1 friction item):
+  `scripts/tokens-update.py` aggregates real per-message token counts from the
+  build sessions into `docs/tokens.json` (input + output + reasoning; cache
+  reads excluded), and CI validates the ledger schema and that
+  `release_version` matches the crate manifest.
+
+### Fixed
+
+- Records corrected: the process-feedback entry about the uninstrumented
+  ledger (previously referenced but missing) is now actually written, and the
+  CHANGELOG/guide-compliance claim that "the release workflow records each
+  tag" was removed — there is no release workflow (source-only, D-007).
+
+### Token usage
+
+- Cumulative since project start and this release window: see
+  `docs/tokens.json`; updated by `scripts/tokens-update.py` at release time.
+
 ## [1.5.0] - 2026-11-07
 
 ### Changed
@@ -217,5 +243,9 @@ save your settings.
 
 ### Token usage
 
-- Cumulative since project start: see `docs/tokens.json`.
-- This release: recorded by the release workflow.
+- Cumulative since project start: 19,844,575 tokens; this release window
+  (2026-11-07): 6,661,364 — see `docs/tokens.json`.
+- Method: aggregated from the build sessions by `scripts/tokens-update.py`
+  (input + output + reasoning; cache reads excluded). There is no release
+  workflow — source-only distribution (D-007) — so the ledger is updated at
+  release time and validated in CI.

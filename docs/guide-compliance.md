@@ -16,7 +16,7 @@ adaptations.
 | PR template (§8.3) + Rust QA (§M.3) | Met. `.github/PULL_REQUEST_TEMPLATE.md`. |
 | Personal-data & secret scans (§II.29) | Met as blocking steps in CI; scripts under `scripts/`. |
 | No heavy local builds (§4, §K.11.8) | Met. All build/test ran in CI via `ci.sh`. |
-| Token ledger (§12.1) | Met. `docs/tokens.json`; release workflow records each tag. |
+| Token ledger (§12.1) | Met. `docs/tokens.json`; instrumented 2026-11-07 via `scripts/tokens-update.py` (real session data), validated in CI. |
 | Parallel staff simulation (§12.2) | Met. Each slice staffed by 6–8 role agents with a persistent supervisor; roles mapped to harness subagents in `docs/current-model-map.md`; quota-exhaustion rule and reporting format recorded there and in global `AGENTS.md`. |
 
 ## Final gate review (as of v0.5.0, 2026-11-06)
@@ -79,7 +79,7 @@ Nothing in these docs asserts that.
 - **Addendum merged into guide.md.** `addendum.md` is archived; `guide.md` (with appendices A–O) is now the single source of truth for process, legal, client-mode, MCP, Rust QA, and session prompt. All references here cite `guide.md` sections only.
 
 - **§12.1 suite standards reconciliation.** Recorded per guide §12.1:
-  - Token ledger `docs/tokens.json`: present with canonical fields `total_tokens_since_start`, `release_tokens`, `release_version`. Metrics are not yet instrumented and remain zero (process-feedback logged).
+  - Token ledger `docs/tokens.json`: present with canonical fields `total_tokens_since_start`, `release_tokens`, `release_version`. Instrumented 2026-11-07 (real session data via `scripts/tokens-update.py`; the earlier "uninstrumented, zero" state is closed in `docs/process-feedback.md`).
   - Shared `crates/update-check` submodule: **Deliberately not adopted** — Ossuary is fully offline and source-only (D-007). Update-check and crash auto-submission were removed.
   - Signed releases / `SHA256SUMS.txt` / in-app auto-update: **Not applicable** — source-only distribution, no published binaries (D-007).
   - Version UI: adapted to TUI. Version is drawn subtly bottom-right and `V` opens the release-history overlay with embedded changelog and token metrics (`apps/ossuary/src/app.rs`).
