@@ -418,8 +418,8 @@ fn extract_u64(json: &str, key: &str) -> Option<u64> {
     let num_str = &rest[..end];
     let next = rest[end..].chars().next();
     match next {
-        None | Some(',') | Some('}') | Some(']') | Some(' ') | Some('\t')
-        | Some('\n') | Some('\r') => {}
+        None | Some(',') | Some('}') | Some(']') | Some(' ') | Some('\t') | Some('\n')
+        | Some('\r') => {}
         _ => return None,
     }
     num_str.parse::<u64>().ok()
@@ -568,7 +568,8 @@ mod tests {
 
     #[test]
     fn malformed_number_returns_none() {
-        let json = r#"{"total_tokens_since_start": abc, "release_tokens": 7, "release_version": "1.0.0"}"#;
+        let json =
+            r#"{"total_tokens_since_start": abc, "release_tokens": 7, "release_version": "1.0.0"}"#;
         assert_eq!(parse_ledger(json), None);
     }
 
