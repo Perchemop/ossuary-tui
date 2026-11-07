@@ -1,0 +1,10 @@
+[package]
+name = "ossuary-sim-polish"
+version = "1.7.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+description = "Simulation polish layer for Ossuary: composable enhancements without modifying core."
+
+[dependencies]
+ossuary-core = { path = "../ossuary-core", version = "1.7.0" }
