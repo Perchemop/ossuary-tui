@@ -283,3 +283,30 @@ One friction item logged in `docs/process-feedback.md` (bootstrapping
 - Slice staffed per §12.2: supervisor (tooling, docs, release), ui-dev
   (overlay parser — its tooling failed, so the supervisor applied its
   reviewed patch; junk files it created were removed), reviewer on the diff.
+
+## 2026-11-08 — Session 10: v1.7.0 — scope-named art completed
+
+### Done
+
+- Found an in-scope gap on re-reading `docs/scope.md`: the v1 art list names
+  `goose`, `carriage` and `gem`, and none were in the pack (R5 was marked DONE
+  against a broader reading). Added all three as original tonal-ramp pieces:
+  `carriage` (25x12, spoked wheels, void window), `gem` (20x11, faceted
+  brilliant cut), `goose` (22x16, curved neck, bright-filled body). 28 picture
+  pieces now ship built in; 31 headers total, none duplicated, ASCII clean.
+- ROADMAP backfilled: the v1.6.0 milestone row had been missed; both rows are
+  current.
+- `ossuary` / `ossuary-core` bumped to 1.7.0; CHANGELOG and ledger updated
+  (window from the v1.6.0 tag, 2026-11-07 12:17:49 UTC).
+
+### Evidence
+
+- `scripts/analyze_art.py` (authoritative tool output): all three new pieces
+  pass brightness, shadow and anti-aliasing checks — carriage 149 ink / 49.7%
+  density; gem 96 / 43.6%; goose 106 / 30.1%.
+- CI result on the release PR: recorded below once the run completes.
+
+### State
+
+- Versions at 1.7.0. The v1 scope's named art set is complete; no open
+  process-feedback items.

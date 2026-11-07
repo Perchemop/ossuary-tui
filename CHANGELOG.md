@@ -5,6 +5,17 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-11-08
+
+### Added
+
+- **Three scope-named art pieces** — `carriage` (side view with spoked
+  wheels and a void window), `gem` (faceted brilliant cut on the tonal ramp)
+  and `goose` (curved neck, bright-filled body). These complete the named set
+  in `docs/scope.md` ("skull, bones, cat, candle, goose, carriage, ghost, key,
+  moon, gem") that the pack had drifted away from; 28 picture pieces now ship
+  built in.
+
 ## [1.6.0] - 2026-11-07
 
 ### Added

@@ -15,6 +15,8 @@ scope in `docs/scope.md`.
 - **v1.5.0 — full art pack redraw** (2026-11-07): every picture piece redrawn
   with organic contours and tonal ramps; full-scene graveyard and sanctum added;
   guide §12.2 parallel staff simulation adopted | done |
+- **v1.7.0 — scope-named art completed** (2026-11-08): carriage, gem and goose
+  added, completing the set named in `docs/scope.md` | done |
 
 ## Milestones
 
@@ -32,6 +34,8 @@ scope in `docs/scope.md`.
 | v1.4.0 | New original art piece (urn) | done |
 | v1.4.1 | Restored the full built-in art pack after a botched edit dropped pieces | done |
 | v1.5.0 | Full art pack redraw: organic contours, tonal ramps, full-scene graveyard + sanctum; guide §12.2 parallel-staff adoption | done |
+| v1.6.0 | Token ledger instrumented with real session data; readable token metrics in the release overlay; CI ledger validation gate | done |
+| v1.7.0 | Scope-named art completed: carriage, gem, goose added (28 picture pieces) | done |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source
 > only** — there are no downloadable release binaries and no desktop installers.
