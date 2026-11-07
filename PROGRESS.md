@@ -245,3 +245,41 @@ One friction item logged in `docs/process-feedback.md` (bootstrapping
 
 - Final art commits were pushed directly to `main` because branch protection
   returned 404 (not enabled); the v1.5.0 slice returns to the PR flow.
+
+## 2026-11-07 — Session 9: v1.6.0 — token ledger instrumented
+
+### Done
+
+- Closed the last open process-feedback item: `docs/tokens.json` now carries
+  real, measured session data instead of zeros.
+  `scripts/tokens-update.py` aggregates per-assistant-message token counts
+  from the local OpenCode database (input + output + reasoning; cache reads
+  excluded) and rewrites the ledger; CI validates schema and that
+  `release_version` matches the crate manifest.
+- Release overlay (`V`) parses the canonical fields and draws
+  `tokens since start: N | this release: N (vX.Y.Z)`; raw JSON remains the
+  fallback (`apps/ossuary/src/app.rs`, `parse_ledger` + unit tests).
+- Record corrections: the missing process-feedback entry written (with
+  resolution); the false "release workflow records each tag" claim removed
+  from CHANGELOG and guide-compliance.
+- `ossuary` / `ossuary-core` bumped to 1.6.0; CHANGELOG and ledger updated.
+
+### Evidence
+
+- `scripts/tokens-update.py validate` passes locally; CI runs it as a
+  `check`-job step. Ledger at the v1.6.0 release commit: total 20,767,390;
+  this release (window from the v1.5.0 tag, 2026-11-07 10:09 UTC): 1,399,046.
+- Overlay unit tests: `parses_real_single_line_shape`,
+  `handles_varying_whitespace`, `missing_field_returns_none`,
+  `malformed_number_returns_none`, `parses_string_version`.
+
+### State
+
+- Versions at 1.6.0. The §12.1 ledger is met with instrumented data; no open
+  process-feedback items remain.
+
+### Process note
+
+- Slice staffed per §12.2: supervisor (tooling, docs, release), ui-dev
+  (overlay parser — its tooling failed, so the supervisor applied its
+  reviewed patch; junk files it created were removed), reviewer on the diff.

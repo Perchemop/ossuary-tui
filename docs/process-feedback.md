@@ -36,3 +36,29 @@ it is committed after the first green run.
 
 Confirm: did NOT violate clean-room / v0.1.0 gate / no-secrets /
 CI-before-client-try / no meta-guide push.
+
+## 2026-11-06 — token ledger uninstrumented
+
+What I was trying to do: satisfy guide §12.1's token-metrics ledger
+(`docs/tokens.json` with `total_tokens_since_start`, `release_tokens`,
+`release_version`).
+
+Block or friction: the guide requires the ledger but the build environment has
+no instrumentation for agent token usage, so the fields were committed as
+zeros. (This entry was referenced by `docs/guide-compliance.md` and
+`DECISIONS.md` at the time but had not actually been written here; recorded
+now, backdated to when the gap existed.)
+
+Suggested change: none needed in the guide — the ledger is implementable; the
+friction was purely tooling.
+
+Severity: nice-to-have
+
+Resolution (2026-11-07): instrumented. OpenCode records per-assistant-message
+token counts in a local SQLite database; `scripts/tokens-update.py` aggregates
+them (input + output + reasoning; cache reads excluded) into
+`docs/tokens.json`, and CI validates the ledger schema and that
+`release_version` matches the crate manifest.
+
+Confirm: did NOT violate clean-room / v0.1.0 gate / no-secrets /
+CI-before-client-try / no meta-guide push.

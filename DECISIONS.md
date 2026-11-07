@@ -60,7 +60,7 @@ pull request rather than being noticed at release time.
 **Why:** `guide.md` now consolidates the former `addendum.md` (appendices A–O). The suite standards added in §12.1 require a CI-managed token ledger with fields `total_tokens_since_start`, `release_tokens`, `release_version`; a shared `crates/update-check` submodule; signed release artefacts with `SHA256SUMS.txt`; in-app version display with release-notes popup; and refreshed README screenshots per major release.
 
 For Ossuary:
-- Token ledger exists (`docs/tokens.json`) with the canonical fields; metrics remain uninstrumented and are logged in `docs/process-feedback.md`.
+- Token ledger exists (`docs/tokens.json`) with the canonical fields; instrumented 2026-11-07 (see `scripts/tokens-update.py` and the resolution in `docs/process-feedback.md`).
 - `update-check` submodule is deliberately omitted; D-007 makes the app fully offline and source-only.
 - Signed releases and in-app auto-update are not applicable (source-only distribution).
 - Version UI is adapted to the TUI: version is drawn bottom-right; `V` opens the release-history overlay with changelog and token metrics.
