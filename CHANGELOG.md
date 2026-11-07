@@ -5,6 +5,17 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-11-06
+
+### Fixed
+
+- **Restored the full built-in art pack**: a botched edit had replaced the
+  `candle` piece with a sparser duplicate and dropped the pieces between
+  `candle` and the phrases (`moon`, `ghost`, `hourglass`, `pentagram`, `key`,
+  `chalice`, `raven`, `rose`, `bell`, `book`, `skeleton`, `coffin`,
+  `tombstone`, `cross`, `urn`). All 19 picture pieces and 3 phrases are back,
+  every picture carries at least 30 ink cells, and there are no duplicate names.
+
 ## [1.4.0] - 2026-11-06
 
 ### Added
