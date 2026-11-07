@@ -10,7 +10,9 @@ pub struct ColumnSmoothing {
 
 impl ColumnSmoothing {
     pub fn new(alpha: f32) -> Self {
-        Self { alpha: alpha.clamp(0.0, 1.0) }
+        Self {
+            alpha: alpha.clamp(0.0, 1.0),
+        }
     }
 
     /// Smooth `new_val` towards `prev` using exponential moving average.

@@ -4,8 +4,8 @@
 //! without modifying the core engine. New behaviours are added as pure modules
 //! that wrap or decorate the core types.
 
-pub mod column_smoothing;
 pub mod art_reveal_ease;
+pub mod column_smoothing;
 
+pub use art_reveal_ease::{ease_in_out_quad, ease_out_cubic};
 pub use column_smoothing::ColumnSmoothing;
-pub use art_reveal_ease::{ease_out_cubic, ease_in_out_quad};
