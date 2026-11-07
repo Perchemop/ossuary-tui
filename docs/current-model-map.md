@@ -3,6 +3,10 @@
 Which free model is assigned to which role for the current session. Updated
 whenever the available free models change (guide §5.2).
 
+Guide synchronisation (§12.3): this ruleset was last diffed against
+`~/guide.md` on **2026-11-07**; §12.2 parallel staff simulation adopted that
+day (D-009).
+
 ## Provider order (guide §5)
 
 1. **OpenCode free models** (default).
@@ -58,3 +62,28 @@ Public research for `docs/inspiration.md` used the browse/fetch capability of
 the working model to read public pages, then wrote original behavioural
 summaries with URLs only — no copied text, screenshots or assets. The human gate
 (guide §8.4) applies before any dependent implementation.
+
+## Parallel team composition (guide §12.2)
+
+Each vertical slice is staffed by 6–8 agents with a persistent supervisor across
+slices. Roles map to the harness subagents as follows; the orchestrator assigns
+each role the best live free model at slice start, per the table above.
+
+| Guide role | Subagent | Model source |
+|---|---|---|
+| Supervisor / tech lead | orchestrating session | best reasoning/tool-calling free model in-session |
+| Lead developer (core) | `domain-dev` | coder role model |
+| UI developer (shell) | `ui-dev` | coder role model |
+| Reviewer | `reviewer` | reviewer role model |
+| QA tester / bug hunter | `test-writer` | tester role model |
+| Explorer / researcher | `explore` | fastest free model |
+| Docs writer | `docs-writer` | docs role model |
+| Fixer | `fixer` | coder role model |
+| Rotating specialist | `general` | per-task selection |
+
+Rules: workers never ask the human and never push/merge/tag; the supervisor is
+the sole user of the question tool and the sole pusher/merger. When free-model
+quota is exhausted mid-slice, the team shrinks to the critical path first
+(sequential) and non-blocking parallel work resumes after quota resets — the
+exhaustion is recorded here and in `docs/process-feedback.md`.
+
