@@ -304,7 +304,10 @@ One friction item logged in `docs/process-feedback.md` (bootstrapping
 - `scripts/analyze_art.py` (authoritative tool output): all three new pieces
   pass brightness, shadow and anti-aliasing checks — carriage 149 ink / 49.7%
   density; gem 96 / 43.6%; goose 106 / 30.1%.
-- CI result on the release PR: recorded below once the run completes.
+- CI result on the release PR: green on `check`, `matrix (ubuntu-latest)`,
+  `matrix (macos-latest)` and `matrix (windows-latest)` (plus the `installable`
+  builds); the CI-generated `Cargo.lock` (which the 1.6.0 bump had left stale
+  at 1.5.0) was committed with this slice.
 
 ### State
 
