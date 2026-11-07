@@ -8,4 +8,4 @@ pub mod column_smoothing;
 pub mod art_reveal_ease;
 
 pub use column_smoothing::ColumnSmoothing;
-pub use art_reveal_ease::ArtRevealEase;
+pub use art_reveal_ease::{ease_out_cubic, ease_in_out_quad};
