@@ -1,5 +1,11 @@
 # Authoritative status checks for `ci.sh` (guide §II.20.4 / §II.25).
 # One exact check name per line; blank lines and `#` comments are ignored.
 # Only these decide ci.sh's verdict; other checks are still reported.
+#
+# Matrix jobs are reported per-OS by GitHub, so each leg is named explicitly.
+# A bare `matrix` never appears as a check run and would read as "did not
+# report" (a false-negative `CI RESULT: FAILURE`).
 check
-matrix
+matrix (ubuntu-latest)
+matrix (macos-latest)
+matrix (windows-latest)
