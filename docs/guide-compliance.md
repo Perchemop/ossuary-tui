@@ -17,6 +17,7 @@ adaptations.
 | Personal-data & secret scans (§II.29) | Met as blocking steps in CI; scripts under `scripts/`. |
 | No heavy local builds (§4, §K.11.8) | Met. All build/test ran in CI via `ci.sh`. |
 | Token ledger (§12.1) | Met. `docs/tokens.json`; release workflow records each tag. |
+| Parallel staff simulation (§12.2) | Met. Each slice staffed by 6–8 role agents with a persistent supervisor; roles mapped to harness subagents in `docs/current-model-map.md`; quota-exhaustion rule and reporting format recorded there and in global `AGENTS.md`. |
 
 ## Final gate review (as of v0.5.0, 2026-11-06)
 
@@ -84,3 +85,12 @@ Nothing in these docs asserts that.
   - Version UI: adapted to TUI. Version is drawn subtly bottom-right and `V` opens the release-history overlay with embedded changelog and token metrics (`apps/ossuary/src/app.rs`).
 
 - **`.ci-required.txt` correction.** The file now lists exact GitHub check names (`matrix (ubuntu-latest)` etc.) to avoid false-negative `CI RESULT: FAILURE` when the bare `matrix` name never reports.
+
+- **§12.2 parallel staff simulation adopted (2026-11-07).** Slices are run by a
+  6–8 role agent team (persistent supervisor + parallel workers) rather than a
+  single sequential agent. The role → subagent mapping, worker report format,
+  the rule that only the supervisor questions the human / pushes / merges, and
+  the free-model capacity shrink plan are recorded in
+  `docs/current-model-map.md` (Parallel team composition) and mirrored in the
+  global `AGENTS.md`. No guide deviation is involved: heavy builds stay in CI
+  and human gates are unchanged.

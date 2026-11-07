@@ -67,3 +67,19 @@ For Ossuary:
 - README previews are generated in CI and will be refreshed at v1.0 and each major release.
 
 Recorded in `docs/guide-compliance.md` (Recent guide changes, 2026-11-07).
+
+## 2026-11-07 — D-009: Parallel staff simulation (guide §12.2) adopted
+
+**Decision:** Vertical slices are executed by a 6–8 role agent team — a
+persistent supervisor plus parallel workers (domain, UI, reviewer, tester,
+explorer, docs, fixer, rotating specialist) — instead of a single sequential
+agent.
+
+**Why:** Guide §12.2 mandates the professional-staff workflow; guide §12.3
+requires the agent's own ruleset to be synchronised with the guide before
+further work. The mapping of guide roles to this harness's subagents, the
+worker report format, the rule that only the supervisor questions the human and
+pushes/merges/tags, and the free-model capacity shrink plan are recorded in the
+global `AGENTS.md` and `docs/current-model-map.md`. No deviation is needed: the
+no-heavy-local-build, clean-room and human-gate rules apply to the whole team.
+

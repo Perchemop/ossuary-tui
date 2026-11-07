@@ -5,6 +5,23 @@ All notable changes to Ossuary are recorded here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Complete art pack redraw** (22 original picture pieces): organic contours
+  replace box frames, per-piece tonal ramps (bright fill, dim edges, true void
+  eye sockets), anti-aliased edges, and two full-scene compositions
+  (`graveyard` 39×15, `sanctum` 43×13). All pieces verified against
+  `scripts/analyze_art.py` and the `tone()` ramp in `ossuary-core`.
+
+### Process
+
+- **Guide §12.2 parallel staff simulation adopted**: slices are run by a 6–8
+  role agent team (persistent supervisor + parallel workers). Role → subagent
+  mapping and the free-model capacity shrink plan recorded in
+  `docs/current-model-map.md`; guide sync date 2026-11-07.
+
 ## [1.4.1] - 2026-11-06
 
 ### Fixed
