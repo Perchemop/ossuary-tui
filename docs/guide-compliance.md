@@ -72,3 +72,15 @@ Nothing in these docs asserts that.
   from a clone. This overrides the guide's release-artefact default.
 - **No network features.** The update check and crash auto-submission were
   removed so the whole tree is offline.
+
+## Recent guide changes (2026-11-07)
+
+- **Addendum merged into guide.md.** `addendum.md` is archived; `guide.md` (with appendices A–O) is now the single source of truth for process, legal, client-mode, MCP, Rust QA, and session prompt. All references here cite `guide.md` sections only.
+
+- **§12.1 suite standards reconciliation.** Recorded per guide §12.1:
+  - Token ledger `docs/tokens.json`: present with canonical fields `total_tokens_since_start`, `release_tokens`, `release_version`. Metrics are not yet instrumented and remain zero (process-feedback logged).
+  - Shared `crates/update-check` submodule: **Deliberately not adopted** — Ossuary is fully offline and source-only (D-007). Update-check and crash auto-submission were removed.
+  - Signed releases / `SHA256SUMS.txt` / in-app auto-update: **Not applicable** — source-only distribution, no published binaries (D-007).
+  - Version UI: adapted to TUI. Version is drawn subtly bottom-right and `V` opens the release-history overlay with embedded changelog and token metrics (`apps/ossuary/src/app.rs`).
+
+- **`.ci-required.txt` correction.** The file now lists exact GitHub check names (`matrix (ubuntu-latest)` etc.) to avoid false-negative `CI RESULT: FAILURE` when the bare `matrix` name never reports.
