@@ -313,3 +313,30 @@ One friction item logged in `docs/process-feedback.md` (bootstrapping
 
 - Versions at 1.7.0. The v1 scope's named art set is complete; no open
   process-feedback items.
+
+## 2026-11-08 — Session 11: v1.8.0 — simulation polish layer
+
+### Done
+
+- Created new workspace crate `crates/ossuary-sim-polish` (version 1.8.0) with
+  composable polish modules that do not edit `ossuary-core`:
+  - `column_smoothing::ColumnSmoothing` — one-pole EMA for column head jitter
+    reduction, unit-tested.
+  - `art_reveal_ease` — `ease_out_cubic` and `ease_in_out_quad` pure easing
+    curves for reveal timing, unit-tested.
+- Versions bumped to 1.8.0 for `ossuary`, `ossuary-core` and
+  `ossuary-sim-polish`; `Cargo.toml` dependency updated.
+- CHANGELOG updated with 1.8.0 entry; workspace `Cargo.toml` member list extended.
+
+### Evidence
+
+- CI run `ci.sh run "add ossuary-sim-polish crate for simulation polish"` →
+  `CI RESULT: SUCCESS` (PR #19); all required checks `check`, `matrix (*)`
+  passed after formatting fixes.
+- PR #19 merged to `main` as `Ossuary Dev <dev@example.com>`; main is green.
+
+### State
+
+- Versions at 1.8.0. Simulation polish is provided as a separate, opt-in layer
+  respecting guide §12.2 build hygiene (new module only, no edits to existing
+  engine files). No open process-feedback items.
