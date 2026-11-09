@@ -6,6 +6,8 @@
 
 pub mod art_reveal_ease;
 pub mod column_smoothing;
+pub mod frame_polish;
 
 pub use art_reveal_ease::{ease_in_out_quad, ease_out_cubic};
 pub use column_smoothing::ColumnSmoothing;
+pub use frame_polish::FramePolish;

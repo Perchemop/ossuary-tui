@@ -340,3 +340,21 @@ One friction item logged in `docs/process-feedback.md` (bootstrapping
 - Versions at 1.8.0. Simulation polish is provided as a separate, opt-in layer
   respecting guide §12.2 build hygiene (new module only, no edits to existing
   engine files). No open process-feedback items.
+
+## 2026-11-09 — Session 12: roadmap expansion planning
+
+### Done
+
+- Updated ROADMAP.md with v1.8.0 entry and v1.9.0 planning milestone
+- Updated feature breadth percentages to reflect simulation polish layer delivery
+- Confirmed v1 scope completeness per §9/§2.5 quality gates
+
+### Evidence
+
+- ROADMAP.md: v1.8.0 milestone added; v1.9.0 planning item recorded; feature breadth percentages updated (Simulation & rendering ~95%, Art model & lifecycle ~88%, Controls & persistence ~88%)
+- All in-scope capabilities verified; CI green on check + matrix (Linux/macOS/Windows)
+- No open process-feedback items; token ledger at release_version 1.8.0
+
+### State
+
+- Versions at 1.8.0. Roadmap expansion planned; no remaining v1 work items. Next slice will target v1.9.0 milestone planning per guide §6.2.

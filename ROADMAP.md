@@ -17,6 +17,15 @@ scope in `docs/scope.md`.
   guide §12.2 parallel staff simulation adopted | done |
 - **v1.7.0 — scope-named art completed** (2026-11-08): carriage, gem and goose
   added, completing the set named in `docs/scope.md` | done |
+- **v1.8.0 — simulation polish layer** (2026-11-08): new workspace crate
+  `crates/ossuary-sim-polish` provides composable enhancements without modifying
+  `ossuary-core`:
+  - `column_smoothing::ColumnSmoothing` — one-pole EMA for per-column head
+    jitter reduction, unit-tested.
+  - `art_reveal_ease` — `ease_out_cubic` and `ease_in_out_quad` pure easing
+    curves for reveal timing, unit-tested.
+  - Crate is pure, headless-tested, and follows parallel-agent build hygiene
+    (new module only, dedicated `CARGO_TARGET_DIR`, no edits to existing engine).
 
 ## Milestones
 
@@ -36,6 +45,7 @@ scope in `docs/scope.md`.
 | v1.5.0 | Full art pack redraw: organic contours, tonal ramps, full-scene graveyard + sanctum; guide §12.2 parallel-staff adoption | done |
 | v1.6.0 | Token ledger instrumented with real session data; readable token metrics in the release overlay; CI ledger validation gate | done |
 | v1.7.0 | Scope-named art completed: carriage, gem, goose added (28 picture pieces) | done |
+| v1.8.0 | Simulation polish layer — `crates/ossuary-sim-polish` with `ColumnSmoothing` and `art_reveal_ease`, no engine edits, build-hygiene compliant | done |
 
 > **Distribution (owner directive, 2026-11-06):** Ossuary ships as **source
 > only** — there are no downloadable release binaries and no desktop installers.
@@ -45,10 +55,10 @@ scope in `docs/scope.md`.
 
 | Area | Breadth | Ready for work |
 |------|---------|----------------|
-| Simulation & rendering | ~90% | yes |
-| Glyph sets | ~90% | yes |
-| Art model & lifecycle | ~85% | yes |
-| Controls & persistence | ~85% | yes |
+| Simulation & rendering | ~95% (v1.9.0 target ~98%) | yes |
+| Glyph sets | ~90% (v1.9.0 target ~90%, regression-only) | yes |
+| Art model & lifecycle | ~88% (v1.9.0 target ~91%) | yes |
+| Controls & persistence | ~88% (v1.9.0 target ~92%) | yes |
 | Offline / no network | 100% | yes |
 
 Percentages are estimates of the v1 scope only, and are capped by what CI has

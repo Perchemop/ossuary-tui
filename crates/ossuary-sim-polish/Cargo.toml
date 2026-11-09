@@ -7,4 +7,4 @@ license = "MIT OR Apache-2.0"
 description = "Simulation polish layer for Ossuary: composable enhancements without modifying core."
 
 [dependencies]
-ossuary-core = { path = "../ossuary-core", version = "1.7.0" }
+ossuary-core = { path = "../ossuary-core", version = "1.8.0" }
