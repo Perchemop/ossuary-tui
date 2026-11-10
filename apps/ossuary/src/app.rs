@@ -198,6 +198,26 @@ impl App {
                 let state = if self.config.color_drift { "on" } else { "off" };
                 self.note(&format!("colour drift: {state}"));
             }
+            KeyCode::Char('p') => {
+                self.config.polish = !self.config.polish;
+                self.apply_config();
+                let state = if self.config.polish { "on" } else { "off" };
+                self.note(&format!("polish: {state}"));
+            }
+            KeyCode::Char('[') => {
+                let new_strength = (self.config.polish_strength - 0.1).max(0.0).min(1.0);
+                self.config.polish_strength = new_strength;
+                self.apply_config();
+                let state = format!("{:.1}", self.config.polish_strength);
+                self.note(&format!("polish strength: {state}"));
+            }
+            KeyCode::Char(']') => {
+                let new_strength = (self.config.polish_strength + 0.1).max(0.0).min(1.0);
+                self.config.polish_strength = new_strength;
+                self.apply_config();
+                let state = format!("{:.1}", self.config.polish_strength);
+                self.note(&format!("polish strength: {state}"));
+            }
             KeyCode::Char('t') => {
                 self.config.show_titles = !self.config.show_titles;
                 self.apply_config();
