@@ -37,7 +37,10 @@ pub const MAX_BAND: u8 = 3;
 ///
 /// let polish = FramePolish::new(0.5);
 /// let blended = polish.apply(&prev, &curr);
-/// assert_eq!(blended.cell(0, 0), Cell { ch: '#', intensity: 2 });
+/// assert_eq!(blended.cell(0, 0), Cell {
+    ch: '#',
+    intensity: 2
+});
 /// ```
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct FramePolish {
@@ -294,12 +297,18 @@ mod tests {
         let mut prev = Frame::new(1, 1);
         prev.set(0, 0, Cell { ch: '.', intensity: 2 });
         let mut curr = Frame::new(1, 1);
-        curr.set(0, 0, Cell { ch: '#', intensity: 2 });
+        curr.set(0, 0, Cell {
+    ch: '#',
+    intensity: 2
+});
         // Equal bands: the gain decides, so the glyph swaps at 0.5.
         let below = FramePolish::new(0.49).apply(&prev, &curr);
         let at = FramePolish::new(0.5).apply(&prev, &curr);
         assert_eq!(below.cell(0, 0), Cell { ch: '.', intensity: 2 });
-        assert_eq!(at.cell(0, 0), Cell { ch: '#', intensity: 2 });
+        assert_eq!(at.cell(0, 0), Cell {
+    ch: '#',
+    intensity: 2
+});
     }
 
     #[test]
@@ -345,10 +354,19 @@ mod tests {
         let quarter = FramePolish::new(0.25).apply(&prev, &curr);
         let three_quarters = FramePolish::new(0.75).apply(&prev, &curr);
         // Rising cell: empty -> band 3 shows a faint glyph before halfway.
-        assert_eq!(quarter.cell(0, 0), Cell { ch: '#', intensity: 1 });
-        assert_eq!(three_quarters.cell(0, 0), Cell { ch: '#', intensity: 2 });
+        assert_eq!(quarter.cell(0, 0), Cell {
+    ch: '#',
+    intensity: 1
+});
+        assert_eq!(three_quarters.cell(0, 0), Cell {
+    ch: '#',
+    intensity: 2
+});
         // Falling cell: band 3 -> empty keeps the dimming glyph until it dies.
-        assert_eq!(quarter.cell(1, 0), Cell { ch: '|', intensity: 2 });
+        assert_eq!(quarter.cell(1, 0), Cell {
+    ch: '|',
+    intensity: 2
+});
         assert_eq!(three_quarters.cell(1, 0), Cell { ch: '|', intensity: 1 });
         assert_in_domain(&quarter);
         assert_in_domain(&three_quarters);
