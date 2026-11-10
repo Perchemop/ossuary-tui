@@ -81,6 +81,8 @@ impl Default for Config {
             color_drift: false,
             show_titles: false,
             show_phrases: true,
+            polish: true,
+            polish_strength: 0.5,
         }
     }
 }
@@ -218,7 +220,6 @@ fn polish_strength_half() -> f32 {
 }
 
 /// The default crash-log directory.
-
 #[cfg(test)]
 mod tests {
     use super::*;
