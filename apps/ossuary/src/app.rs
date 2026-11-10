@@ -312,7 +312,10 @@ impl App {
             "t          toggle art titles".to_string(),
             "p          toggle polish on/off".to_string(),
             ", / .      decrease / increase polish strength".to_string(),
-            format!("polish: {}  strength: {:.1}", state, self.config.polish_strength),
+            format!(
+                "polish: {}  strength: {:.1}",
+                state, self.config.polish_strength
+            ),
             "s          save theme".to_string(),
             "V          changelog".to_string(),
             "? or Esc   close this help   |   q  quit".to_string(),
