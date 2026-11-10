@@ -218,7 +218,6 @@ fn polish_strength_half() -> f32 {
 }
 
 /// The default crash-log directory.
-}
 
 #[cfg(test)]
 mod tests {
