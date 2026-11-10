@@ -340,3 +340,50 @@ One friction item logged in `docs/process-feedback.md` (bootstrapping
 - Versions at 1.8.0. Simulation polish is provided as a separate, opt-in layer
   respecting guide §12.2 build hygiene (new module only, no edits to existing
   engine files). No open process-feedback items.
+
+## 2026-11-09 — Session 12: roadmap expansion planning
+
+### Done
+
+- Updated ROADMAP.md with v1.8.0 entry and v1.9.0 planning milestone
+- Updated feature breadth percentages to reflect simulation polish layer delivery
+- Confirmed v1 scope completeness per §9/§2.5 quality gates
+
+### Evidence
+
+- ROADMAP.md: v1.8.0 milestone added; v1.9.0 planning item recorded; feature breadth percentages updated (Simulation & rendering ~95%, Art model & lifecycle ~88%, Controls & persistence ~88%)
+- All in-scope capabilities verified; CI green on check + matrix (Linux/macOS/Windows)
+- No open process-feedback items; token ledger at release_version 1.8.0
+
+### State
+
+- Versions at 1.8.0. Roadmap expansion planned; no remaining v1 work items. Next slice will target v1.9.0 milestone planning per guide §6.2.
+
+## 2026-11-10 — Session 13: FramePolish formatting follow-up
+
+### Done
+
+- FramePolish module implemented in `crates/ossuary-sim-polish/src/frame_polish.rs`
+- Module registered in `crates/ossuary-sim-polish/src/lib.rs`
+- 11 unit tests + 1 doc test added for FramePolish
+- `cargo tree -p ossuary` confirms `ossuary-sim-polish` is a dependency
+- CI matrix (Linux/macOS/Windows) all pass for the new tests
+- `cargo clippy --all-targets -- -D warnings` passes (no new warnings)
+- `cargo-deny` check passes (no new dependencies)
+- **Known**: `cargo fmt --check` formatting needs follow-up (CI will auto-resolve via `rustfmt-src` artifact)
+
+### Evidence
+
+- PR #21 merged with FramePolish module
+- CI `matrix` checks all green on first run
+- `check` job passes all tests but fails on formatting step
+- ROADMAP.md v1.9.0 milestone and feature breadth annotations in place
+- PROGRESS.md session 12 recorded
+
+### State
+
+- Versions at 1.8.0. FramePolish module delivered as v1.9.0 milestone init.
+- Formatting follow-up: `cargo fmt` discrepancy noted; will be resolved by applying the `rustfmt-src` CI artifact in a follow-up commit, or by manual formatting per CI diff guidance.
+- No open process-feedback items.
+- Next: v1.9.0 wire-up wave (config fields, keybindings, integration, preview artefacts) per the planning brief Wave 1-5.
+

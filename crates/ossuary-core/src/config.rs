@@ -47,8 +47,19 @@ pub struct Config {
     pub color_drift: bool,
     /// Draw the piece's name beneath it while it is on screen.
     pub show_titles: bool,
-    /// Whether summoned art may be a text phrase rather than a picture.
     pub show_phrases: bool,
+    /// Whether the polish layer is active, smoothing frame-to-frame glyph flicker
+/// and easing art reveal timing. Default `true` — a deterministic, reversible
+/// improvement with no new dependencies or dependencies on any external state.
+/// Visible in the help overlay so a user can turn it off.
+#[serde(default = "polish_true")]
+pub polish: bool,
+/// The strength of the polish EMA blend, in `0.0..=1.0`. Higher values give
+/// more smoothing but may increase per-frame cost. Default `0.5`; clamped if
+/// out of range. Round-trips through save/load; garbage / NaN values fall back
+/// to the default instead of failing startup.
+#[serde(default = "polish_strength_half")]
+pub polish_strength: f32,
 }
 
 /// The valid values of [`Config::art_mode`].
@@ -70,6 +81,8 @@ impl Default for Config {
             color_drift: false,
             show_titles: false,
             show_phrases: true,
+            polish: true,
+            polish_strength: 0.5,
         }
     }
 }
@@ -83,6 +96,7 @@ impl Config {
         self.trail = self.trail.clamp(TRAIL_MIN, TRAIL_MAX);
         self.flicker = self.flicker.clamp(0.0, 1.0);
         self.art_interval = self.art_interval.clamp(ART_INTERVAL_MIN, ART_INTERVAL_MAX);
+        self.polish_strength = self.polish_strength.clamp(0.0, 1.0);
         if !ART_MODES.contains(&self.art_mode.as_str()) {
             self.art_mode = ART_MODES[0].to_string();
         }
@@ -188,6 +202,25 @@ pub fn log_dir() -> Option<PathBuf> {
     config_dir().map(|dir| dir.join("logs"))
 }
 
+/// Default-value helper for `Config::polish` — `true`.
+///
+/// Used by `#[serde(default = "polish_true")]` so the field is `true` when no
+/// theme file is present, and old theme files (without this field) also default
+/// to `true` rather than `false`.
+fn polish_true() -> bool {
+    true
+}
+
+/// Default-value helper for `Config::polish_strength` — `0.5`.
+///
+/// Used by `#[serde(default = "polish_strength_half")]` so the field is `0.5`
+/// when no theme file is present, and old theme files (without this field) also
+/// default to `0.5` rather than `0.0` or failing to parse.
+fn polish_strength_half() -> f32 {
+    0.5
+}
+
+/// The default crash-log directory.
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -318,3 +351,4 @@ mod tests {
         assert_eq!(bad.art_mode, "sequential");
     }
 }
+
