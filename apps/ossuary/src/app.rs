@@ -205,14 +205,14 @@ impl App {
                 self.note(&format!("polish: {state}"));
             }
             KeyCode::Char(',') => {
-                let new_strength = (self.config.polish_strength - 0.1).max(0.0).min(1.0);
+                let new_strength = (self.config.polish_strength - 0.1).clamp(0.0, 1.0);
                 self.config.polish_strength = new_strength;
                 self.apply_config();
                 let state = format!("{:.1}", self.config.polish_strength);
                 self.note(&format!("polish strength: {state}"));
             }
             KeyCode::Char('.') => {
-                let new_strength = (self.config.polish_strength + 0.1).max(0.0).min(1.0);
+                let new_strength = (self.config.polish_strength + 0.1).clamp(0.0, 1.0);
                 self.config.polish_strength = new_strength;
                 self.apply_config();
                 let state = format!("{:.1}", self.config.polish_strength);
