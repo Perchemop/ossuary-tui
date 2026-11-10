@@ -361,32 +361,32 @@ mod tests {
         // Old theme file (no polish fields) loads with defaults.
         let dir = tempfile::tempdir().expect("tempdir")
         let path = dir.path().join("old.json");
-        std::fs::write(&path, r#'{"glyph_set": "bone", "speed": 0.5}'#).expect("write")
+        std::fs::write(&path, "{\"glyph_set\": \"bone\", \"speed\": 0.5}").expect("write")
         let loaded = Config::load_or_default(&path);
         assert!(loaded.polish);
         assert!((loaded.polish_strength - 0.5).abs() < 1e-4);
 
         // New theme file (with polish fields) loads with those values.
         let path2 = dir.path().join("new.json");
-        std::fs::write(&path2, r#'{"glyph_set": "bone", "speed": 0.5, "polish": true, "polish_strength": 0.75}'#).expect("write")
+        std::fs::write(&path2, "{\"glyph_set\": \"bone\", \"speed\": 0.5, \"polish\": true, \"polish_strength\": 0.75}").expect("write")
         let loaded2 = Config::load_from(&path2).expect("load");
         assert!(loaded2.polish);
         assert!((loaded2.polish_strength - 0.75).abs() < 1e-4);
 
         // Garbage / NaN polish_strength falls back to default.
         let path3 = dir.path().join("bad.json");
-        std::fs::write(&path3, r#'{"polish_strength": 5.0}'#).expect("write")
+        std::fs::write(&path3, "{\"polish_strength\": 5.0}").expect("write")
         let loaded3 = Config::load_from(&path3).expect("load");
         assert_eq!(loaded3.polish_strength, 0.5);
 
         // Clamp out-of-range values.
         let path4 = dir.path().join("clamp.json");
-        std::fs::write(&path4, r#'{"polish_strength": -0.3}'#).expect("write")
+        std::fs::write(&path4, "{\"polish_strength\": -0.3}").expect("write")
         let loaded4 = Config::load_from(&path4).expect("load");
         assert!((loaded4.polish_strength - 0.5).abs() < 1e-4);
 
         let path5 = dir.path().join("clamp2.json");
-        std::fs::write(&path5, r#'{"polish_strength": 2.0}'#).expect("write")
+        std::fs::write(&path5, "{\"polish_strength\": 2.0}").expect("write")
         let loaded5 = Config::load_from(&path5).expect("load");
         assert!((loaded5.polish_strength - 0.5).abs() < 1e-4);
     }
