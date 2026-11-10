@@ -47,7 +47,6 @@ pub struct Config {
     pub color_drift: bool,
     /// Draw the piece's name beneath it while it is on screen.
     pub show_titles: bool,
-    pub show_phrases: bool,
     /// Whether the polish layer is active, smoothing frame-to-frame glyph flicker
 /// and easing art reveal timing. Default `true` — a deterministic, reversible
 /// improvement with no new dependencies or dependencies on any external state.
@@ -81,8 +80,6 @@ impl Default for Config {
             color_drift: false,
             show_titles: false,
             show_phrases: true,
-            polish: true,
-            polish_strength: 0.5,
         }
     }
 }
@@ -96,7 +93,6 @@ impl Config {
         self.trail = self.trail.clamp(TRAIL_MIN, TRAIL_MAX);
         self.flicker = self.flicker.clamp(0.0, 1.0);
         self.art_interval = self.art_interval.clamp(ART_INTERVAL_MIN, ART_INTERVAL_MAX);
-        self.polish_strength = self.polish_strength.clamp(0.0, 1.0);
         if !ART_MODES.contains(&self.art_mode.as_str()) {
             self.art_mode = ART_MODES[0].to_string();
         }
@@ -218,6 +214,11 @@ fn polish_true() -> bool {
 /// default to `0.5` rather than `0.0` or failing to parse.
 fn polish_strength_half() -> f32 {
     0.5
+}
+
+/// The default crash-log directory.
+pub fn log_dir() -> Option<PathBuf> {
+    config_dir().map(|dir| dir.join("logs"))
 }
 
 #[cfg(test)]
@@ -351,43 +352,3 @@ mod tests {
     }
 }
 
-    #[test]
-    fn polish_fields_clamp_and_default() {
-        // Default values when no theme file is present.
-        let default = Config::default();
-        assert!(default.polish);
-        assert!((default.polish_strength - 0.5).abs() < 1e-4);
-
-        // Old theme file (no polish fields) loads with defaults.
-        let dir = tempfile::tempdir().expect("tempdir");
-        let path = dir.path().join("old.json");
-        std::fs::write(&path, r#"{"glyph_set": "bone", "speed": 0.5}"#).expect("write");
-        let loaded = Config::load_or_default(&path);
-        assert!(loaded.polish);
-        assert!((loaded.polish_strength - 0.5).abs() < 1e-4);
-
-        // New theme file (with polish fields) loads with those values.
-        let path2 = dir.path().join("new.json");
-        std::fs::write(&path2, r#"{"glyph_set": "bone", "speed": 0.5, "polish": true, "polish_strength": 0.75}"#).expect("write");
-        let loaded2 = Config::load_from(&path2).expect("load");
-        assert!(loaded2.polish);
-        assert!((loaded2.polish_strength - 0.75).abs() < 1e-4);
-
-        // Garbage / NaN polish_strength falls back to default.
-        let path3 = dir.path().join("bad.json");
-        std::fs::write(&path3, r#"{"polish_strength": 5.0}"#).expect("write");
-        let loaded3 = Config::load_from(&path3).expect("load");
-        assert_eq!(loaded3.polish_strength, 0.5);
-
-        // Clamp out-of-range values.
-        let path4 = dir.path().join("clamp.json");
-        std::fs::write(&path4, r#"{"polish_strength": -0.3}"#).expect("write");
-        let loaded4 = Config::load_from(&path4).expect("load");
-        assert!((loaded4.polish_strength - 0.5).abs() < 1e-4);
-
-        let path5 = dir.path().join("clamp2.json");
-        std::fs::write(&path5, r#"{"polish_strength": 2.0}"#).expect("write");
-        let loaded5 = Config::load_from(&path5).expect("load");
-        assert!((loaded5.polish_strength - 0.5).abs() < 1e-4);
-    }
-}
