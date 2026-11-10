@@ -204,14 +204,14 @@ impl App {
                 let state = if self.config.polish { "on" } else { "off" };
                 self.note(&format!("polish: {state}"));
             }
-            KeyCode::Char('[') => {
+            KeyCode::Char(',') => {
                 let new_strength = (self.config.polish_strength - 0.1).max(0.0).min(1.0);
                 self.config.polish_strength = new_strength;
                 self.apply_config();
                 let state = format!("{:.1}", self.config.polish_strength);
                 self.note(&format!("polish strength: {state}"));
             }
-            KeyCode::Char(']') => {
+            KeyCode::Char('.') => {
                 let new_strength = (self.config.polish_strength + 0.1).max(0.0).min(1.0);
                 self.config.polish_strength = new_strength;
                 self.apply_config();
@@ -295,25 +295,29 @@ impl App {
     }
 
     fn draw_help(&self, out: &mut BufWriter<Stdout>, width: usize) -> io::Result<()> {
-        const LINES: [&str; 16] = [
-            "Ossuary — keys",
-            "",
-            "space      pause / resume",
-            "g          next glyph set",
-            "n          summon an art piece",
-            "a          toggle automatic art",
-            "r          next art rotation mode",
-            "+ / -      faster / slower",
-            "] / [      denser / sparser",
-            "f          cycle flicker",
-            "m          monochrome / green",
-            "d          toggle colour drift",
-            "t          toggle art titles",
-            "s          save theme",
-            "V          changelog",
-            "? or Esc   close this help   |   q  quit",
+        let state = if self.config.polish { "on" } else { "off" };
+        let lines: Vec<String> = vec![
+            "Ossuary — keys".to_string(),
+            "".to_string(),
+            "space      pause / resume".to_string(),
+            "g          next glyph set".to_string(),
+            "n          summon an art piece".to_string(),
+            "a          toggle automatic art".to_string(),
+            "r          next art rotation mode".to_string(),
+            "+ / -      faster / slower".to_string(),
+            "] / [      denser / sparser".to_string(),
+            "f          cycle flicker".to_string(),
+            "m          monochrome / green".to_string(),
+            "d          toggle colour drift".to_string(),
+            "t          toggle art titles".to_string(),
+            "p          toggle polish on/off".to_string(),
+            ", / .      decrease / increase polish strength".to_string(),
+            format!("polish: {}  strength: {:.1}", state, self.config.polish_strength),
+            "s          save theme".to_string(),
+            "V          changelog".to_string(),
+            "? or Esc   close this help   |   q  quit".to_string(),
         ];
-        for (index, line) in LINES.iter().enumerate() {
+        for (index, line) in lines.iter().enumerate() {
             let y = 1 + index as u16;
             queue!(
                 out,
