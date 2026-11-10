@@ -47,6 +47,7 @@ pub struct Config {
     pub color_drift: bool,
     /// Draw the piece's name beneath it while it is on screen.
     pub show_titles: bool,
+    pub show_phrases: bool,
     /// Whether the polish layer is active, smoothing frame-to-frame glyph flicker
 /// and easing art reveal timing. Default `true` — a deterministic, reversible
 /// improvement with no new dependencies or dependencies on any external state.
@@ -217,8 +218,6 @@ fn polish_strength_half() -> f32 {
 }
 
 /// The default crash-log directory.
-pub fn log_dir() -> Option<PathBuf> {
-    config_dir().map(|dir| dir.join("logs"))
 }
 
 #[cfg(test)]
