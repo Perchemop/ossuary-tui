@@ -97,7 +97,6 @@ impl Config {
         self.flicker = self.flicker.clamp(0.0, 1.0);
         self.art_interval = self.art_interval.clamp(ART_INTERVAL_MIN, ART_INTERVAL_MAX);
         self.polish_strength = self.polish_strength.clamp(0.0, 1.0);
-        self.polish_strength = self.polish_strength.clamp(0.0, 1.0);
         if !ART_MODES.contains(&self.art_mode.as_str()) {
             self.art_mode = ART_MODES[0].to_string();
         }
