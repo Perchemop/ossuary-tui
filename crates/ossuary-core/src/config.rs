@@ -48,17 +48,26 @@ pub struct Config {
     /// Draw the piece's name beneath it while it is on screen.
     pub show_titles: bool,
     /// Whether the polish layer is active, smoothing frame-to-frame glyph flicker
-/// and easing art reveal timing. Default `true` — a deterministic, reversible
-/// improvement with no new dependencies or dependencies on any external state.
-/// Visible in the help overlay so a user can turn it off.
-#[serde(default = "polish_true")]
-pub polish: bool,
-/// The strength of the polish EMA blend, in `0.0..=1.0`. Higher values give
-/// more smoothing but may increase per-frame cost. Default `0.5`; clamped if
-/// out of range. Round-trips through save/load; garbage / NaN values fall back
-/// to the default instead of failing startup.
-#[serde(default = "polish_strength_half")]
-pub polish_strength: f32,
+    /// and easing art reveal timing. Default `true` — a deterministic, reversible
+    /// improvement with no new dependencies or dependencies on any external state.
+    /// Visible in the help overlay so a user can turn it off.
+    #[serde(default = "polish_true")]
+    pub polish: bool,
+    /// The strength of the polish EMA blend, in `0.0..=1.0`. Higher values give
+    /// more smoothing but may increase per-frame cost. Default `0.5`; clamped if
+    /// out of range. Round-trips through save/load; garbage / NaN values fall back
+    /// to the default instead of failing startup.
+    #[serde(default = "polish_strength_half")]
+    pub polish_strength: f32,
+    /// Visible in the help overlay so a user can turn it off.
+    #[serde(default = "polish_true")]
+    pub polish: bool,
+    /// The strength of the polish EMA blend, in `0.0..=1.0`. Higher values give
+    /// more smoothing but may increase per-frame cost. Default `0.5`; clamped if
+    /// out of range. Round-trips through save/load; garbage / NaN values fall back
+    /// to the default instead of failing startup.
+    #[serde(default = "polish_strength_half")]
+    pub polish_strength: f32,
 }
 
 /// The valid values of [`Config::art_mode`].
@@ -353,6 +362,16 @@ mod tests {
 }
 
     #[test]
+        assert!((loaded4.polish_strength - 0.5).abs() < 1e-4);
+
+        let path5 = dir.path().join("clamp2.json");
+        std::fs::write(&path5, r#"{"polish_strength": 2.0}"#).expect("write");
+        let loaded5 = Config::load_from(&path5).expect("load");
+        assert!((loaded5.polish_strength - 0.5).abs() < 1e-4);
+    }
+}
+
+    #[test]
     fn polish_fields_clamp_and_default() {
         // Default values when no theme file is present.
         let default = Config::default();
@@ -391,4 +410,5 @@ mod tests {
         let loaded5 = Config::load_from(&path5).expect("load");
         assert!((loaded5.polish_strength - 0.5).abs() < 1e-4);
     }
+
 }
